@@ -23,6 +23,16 @@ def request_console(a,session='',data=''):
 def output(cursor=0):
     code,body=http('/api/console',{'X-MST-Cursor':str(cursor)});assert code==200,body;return json.loads(body)
 
+# Stock HTTP/1.0 downloaders may omit Host on USB. Content-addressed runner
+# delivery remains compatible, while USB management endpoints stay forbidden.
+asset_hash=hashlib.sha256((ROOT/'assets/sd-runner.so').read_bytes()).hexdigest()
+for idx,endpoint in enumerate(['/payload/sd-runner-'+asset_hash[:16]+'.so','/api/settings']):
+    c=Peer(1,'172.16.250.248','172.16.250.1',47900+idx,80);c.connect()
+    c.send(('GET '+endpoint+' HTTP/1.0\r\n\r\n').encode());c.send(flags=0x11);drain(c)
+    assert c.fin
+    header,body=c.data.split(b'\r\n\r\n',1)
+    if idx==0:assert b'200 OK' in header and hashlib.sha256(body).hexdigest()==asset_hash
+    else:assert b'403 Forbidden' in header
 # Host and Origin checks also guard against an unrelated website rebinding DNS.
 assert http('/api/settings',{'Host':'attacker.example'})[0]==403
 assert http('/api/settings',{'Origin':'https://attacker.example'})[0]==403

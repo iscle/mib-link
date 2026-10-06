@@ -144,7 +144,7 @@ static err_t http_recv(void *arg,struct tcp_pcb *pcb,struct pbuf *p,err_t error)
     char host[64],origin[64];
     bool ap=ip4_addr_get_u32(ip_2_ip4(&pcb->local_ip))!=ip4_addr_get_u32(netif_ip4_addr(&usb_netif));
     bool host_ok=header_value(c->request,"Host",host,sizeof(host)) &&
-        (!strcmp(host,"192.168.4.1") || !strcmp(host,"192.168.4.1:80") ||
+        ((!ap && !*host) || !strcmp(host,"192.168.4.1") || !strcmp(host,"192.168.4.1:80") ||
          (!ap && (!strcmp(host,"172.16.250.1") || !strcmp(host,"172.16.250.1:80"))));
     bool origin_ok=header_value(c->request,"Origin",origin,sizeof(origin)) &&
         (!*origin || !strcmp(origin,"http://192.168.4.1") || !strcmp(origin,"http://192.168.4.1:80"));
