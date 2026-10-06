@@ -1,19 +1,24 @@
 'use strict';
 const $=id=>document.getElementById(id);
-let cards=[],manager={},cursor=0,session=0,consoleWatching=false,consolePending=false,tab='overview',settingsLoaded=false;
+let cards=[],manager={},cursor=0,session=0,consoleWatching=false,consolePending=false,tab='overview',settingsLoaded=false,refreshPending=false;
 const text=(id,value)=>{$(id).textContent=value;};
 function notice(message){text('notice',message);$('notice').hidden=!message;}
 async function request(path,headers={},method='GET'){
-  const response=await fetch(path,{method,headers,cache:'no-store'});
-  if(!response.ok)throw Error((await response.text()).trim()||`Request failed (${response.status})`);
-  return response;
+  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),8000);
+  try{
+    const response=await fetch(path,{method,headers,cache:'no-store',signal:controller.signal});
+    const body=await response.text();
+    if(!response.ok)throw Error(body.trim()||`Request failed (${response.status})`);
+    return {json:()=>JSON.parse(body)};
+  }finally{clearTimeout(timeout);}
 }
 const json=async(path,headers={})=>(await request(path,headers)).json();
 async function action(name,headers={}){
   await request('/manage/action',{'X-MHI2-Action':name,...headers},'POST');notice('');await refresh();
 }
 function guarded(fn){return async event=>{if(event)event.preventDefault();try{await fn(event);}catch(error){notice(error.message);}};}
-function selected(){return cards.find(c=>c.digest===$('bundle').value);}
+function cardKey(c){return `${c.slot}:${c.digest}`;}
+function selected(){return cards.find(c=>cardKey(c)===$('bundle').value);}
 function selection(){const c=selected();text('bundle-detail',c?`${c.slot} · SHA-256 ${c.digest.slice(0,16)}… · ${c.compatible?'Compatible':'Firmware mismatch'}`:'No compatible SD bundle selected.');$('run').disabled=!c||!c.compatible||manager.busy||!manager.authenticated;}
 function human(n){return `${(n/1073741824).toFixed(2)} GiB`;}
 function renderProgress(p){
@@ -24,6 +29,7 @@ function renderProgress(p){
   text('progress-detail',`Copied ${human(p.copied)} / ${human(total)} · Verified ${human(p.verified)} · Part ${p.part} · ${Math.floor(p.elapsed_ms/60000)} min elapsed${p.heartbeat_age_ms>15000?' · Waiting for fresh progress…':''}`);
 }
 async function refresh(){
+  if(refreshPending)return;refreshPending=true;
   try{
     const [device,m]=await Promise.all([json('/status'),json('/manage/status')]);manager=m;
     text('connection',device.usb_network_up?'USB connected':'Waiting for USB');$('connection').classList.toggle('good',device.usb_network_up);
@@ -32,10 +38,11 @@ async function refresh(){
     text('log',m.log||'Your payload’s output will appear here.');$('autorun').checked=m.autorun;
     const previous=$('bundle').value;cards=m.cards||[];$('bundle').replaceChildren();
     if(!cards.length){const o=document.createElement('option');o.textContent=m.authenticated?'No SD bundles found':'Connect to discover SD cards';o.value='';$('bundle').append(o);}
-    for(const c of cards){const o=document.createElement('option');o.value=c.digest;o.textContent=`${c.name} · ${c.slot}`;$('bundle').append(o);}
-    if(cards.some(c=>c.digest===previous))$('bundle').value=previous;
+    for(const c of cards){const o=document.createElement('option');o.value=cardKey(c);o.textContent=`${c.name} · ${c.slot}`;$('bundle').append(o);}
+    if(cards.some(c=>cardKey(c)===previous))$('bundle').value=previous;
     selection();renderProgress(m.progress);
   }catch(error){text('connection','Pico unreachable');$('connection').classList.remove('good');text('manager-status','Reconnect to MST-Link Wi-Fi to refresh status.');}
+  finally{refreshPending=false;}
 }
 async function loadSettings(){
   const s=await json('/api/settings');$('ssid').value=s.ssid;$('forwards').replaceChildren();

@@ -48,3 +48,11 @@ test('mobile layout stays within viewport',async({page})=>{
   for(const name of ['Console','Wi-Fi & services']){await page.getByRole('button',{name,exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390);}
   await page.getByRole('button',{name:'Overview',exact:true}).click();await page.screenshot({path:path.join(__dirname,'../../docs/mobile.png'),fullPage:true});
 });
+test('identical bundles on different SD slots remain individually selectable',async({page})=>{
+  const calls=await fixture(page);
+  const digest='a'.repeat(64),cards=['sda0','sdb0'].map(slot=>({slot,digest,name:'Same bundle',compatible:true}));
+  await page.route('**/manage/status',route=>route.fulfill({json:{...manager,authenticated:true,cards}}));
+  await page.reload();await expect(page.locator('#bundle option')).toHaveCount(2);
+  await page.locator('#bundle').selectOption(`sdb0:${digest}`);await page.getByRole('button',{name:'Run payload',exact:true}).click();
+  await expect.poll(()=>calls.length).toBe(1);expect(calls[0].headers()['x-mhi2-slot']).toBe('sdb0');
+});

@@ -10,7 +10,7 @@ Automated checks on the development Mac:
 - Packet-level production lwIP manager and access tests.
 - Settings flash journal and 128 simulated interrupted program operations with ASan/UBSan.
 - QNX runner logic built natively with ASan/UBSan.
-- Four desktop/mobile Playwright browser tests using mocked API responses.
+- Five desktop/mobile Playwright browser tests using mocked API responses.
 - Native RP2040 build and UF2 round-trip/boundary/checksum checks.
 
 These checks validate the implemented software paths. Simulated peers are not the physical head unit; mocked browser status is not hardware evidence. The existing USB adapter and stock-login predecessor worked on the owner's Porsche P5250, but **this standalone release has not yet been flashed and accepted on that vehicle**.
