@@ -136,6 +136,10 @@ assert action('status')[0]==200
 lib.test_tick(1);other.extend(net.pop());peer,send=login()
 finish(peer,send,b'PICOSD_STATE inactive\r\n'+(b'PICOSD_LOG '+(b'"'*64).hex().encode()+b'\r\n')*32)
 assert state()['log']=='"'*2048
+# Manual access also disarms auto-run when the previous scan closed its shell.
+assert action('auto-on',**{'X-MHI2-Slot':'sda0','X-MHI2-Digest':digest})[0]==200
+lib.manager_poll(1,1);assert not state()['autorun']
+lib.manager_poll(1,0)
 # Auto-run is opt-in for the observed digest, never an arbitrary new card.
 assert action('auto-on',**{'X-MHI2-Slot':'sda0','X-MHI2-Digest':digest})[0]==200
 lib.test_tick(1);other.extend(net.pop());peer,send=login()

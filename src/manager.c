@@ -195,7 +195,7 @@ void manager_poll(bool usb_up,bool manual_session){
     manual=manual_session;
     if(!usb_up){if(up){close_connection();authenticated=false;stop_pending=false;strcpy(hu_state,"unknown");status="USB disconnected; HU state unknown";armed=true;}up=false;return;}
     up=true;
-    if(manual){if(connection)fail("Manual service session interrupted request");return;}
+    if(manual){autorun=false;stop_pending=false;if(connection)fail("Manual service session interrupted request");return;}
     if(connection && executing){
         pump();if(now()-started>(phase==3?90000u:20000u) || (phase==3 && now()-operation_started>300000u))fail("HU request timed out; inspect HU state before retry");return;
     }
