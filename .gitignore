@@ -1,0 +1,14 @@
+/build/
+/dist/
+/generated/
+/external/
+/private/
+__pycache__/
+.DS_Store
+*.pyc
+
+/build-output.log
+
+/node_modules/
+/test-results/
+/playwright-report/

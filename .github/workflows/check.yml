@@ -1,0 +1,36 @@
+name: Checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test-and-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+      - name: Prepare pinned SDK
+        run: ./scripts/bootstrap.sh
+      - name: Host integration and sanitizer tests
+        run: ./tests/run.sh
+      - name: Build Pico W firmware
+        run: python3 build.py
+      - name: Validate UF2
+        run: python3 tests/check_uf2.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        run: npm test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mst-link-pico-w
+          path: |
+            dist/mst-link-pico-w.uf2
+            dist/SHA256SUMS
+          if-no-files-found: error

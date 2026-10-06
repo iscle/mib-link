@@ -1,0 +1,17 @@
+{
+  "format": 1,
+  "name": "RAM-only-demo",
+  "firmware_sha256": "any",
+  "files": [
+    {
+      "path": "start.sh",
+      "size": 193,
+      "sha256": "39cdb36e499c0bccea13f9a02cbbc6d517f3b02c3d4c600fb8d5df29f048a295"
+    },
+    {
+      "path": "stop.sh",
+      "size": 117,
+      "sha256": "9e9ec6ba2cc53725cfa7488aeea6f34b7c9a4f1ba411426bdf67da42f3cd33a7"
+    }
+  ]
+}

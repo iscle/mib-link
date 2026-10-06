@@ -1,0 +1,5 @@
+/* Keep the final two erase sectors for the alternating settings journal. */
+MEMORY
+{
+    FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 2040k
+}
