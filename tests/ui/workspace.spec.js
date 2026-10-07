@@ -87,9 +87,6 @@ test('workspace layout, keyboard navigation, login and no external dependencies'
   expect(calls[0].headers()['x-hu-password']).toBe('fixture-password');
   await expect(page.locator('#manager-status')).toHaveText('Connected');
   await expect(page.locator('#password')).toHaveValue('fixture-password');
-  await page.getByRole('button', { name: 'Forget login' }).click();
-  await expect(page.locator('#username')).toHaveValue('');
-  await expect(page.locator('#password')).toHaveValue('');
   expect(errors).toEqual([]);
 });
 test('editable Wi-Fi and arbitrary TCP mappings', async ({ page }) => {

@@ -172,11 +172,6 @@ $('login').onsubmit = guarded(async () => {
     password = $('password').value;
   await action('connect', { 'X-HU-User': user, 'X-HU-Password': password });
 });
-$('forget').onclick = guarded(async () => {
-  await action('disconnect');
-  $('username').value = '';
-  $('password').value = '';
-});
 $('scan').onclick = guarded(() => action('scan'));
 $('bundle').onchange = selection;
 $('run').onclick = guarded(async () => {
