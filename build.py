@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build MST-Link for Pico W or ESP32-S3 with its pinned SDK."""
+"""Build MIB-Link for Pico W or ESP32-S3 with its pinned SDK."""
 import os
 import argparse
 import hashlib
@@ -47,8 +47,8 @@ def main():
     dist = ROOT / "dist"
     dist.mkdir(exist_ok=True)
     for ext in ["uf2", "bin", "elf"]:
-        shutil.copy2(ROOT / "build" / ("mst_link." + ext), dist / ("mst-link-pico-w." + ext))
-    uf2 = dist / "mst-link-pico-w.uf2"
+        shutil.copy2(ROOT / "build" / ("mib_link." + ext), dist / ("mib-link-pico-w." + ext))
+    uf2 = dist / "mib-link-pico-w.uf2"
     digest = hashlib.sha256(uf2.read_bytes()).hexdigest()
     (dist / "SHA256SUMS").write_text(digest + "  " + uf2.name + "\n")
     print("Built", uf2)

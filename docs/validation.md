@@ -1,5 +1,9 @@
 # Validation record
 
+## 1.2.0
+
+MIB-Link branding, filenames, API headers and settings namespaces are covered by the host and browser tests. Both firmware targets are rebuilt from the renamed source tree and checked with the image validators. Physical ESP32-S3 and head-unit acceptance remain pending.
+
 ## 1.1.0
 
 Two firmware targets: Pico W/RP2040 and generic ESP32-S3 (4 MB DIO/40 MHz, no PSRAM). Local cross-builds succeeded with the pinned Pico SDK and ESP-IDF v5.5.2. The shared host integration tests and browser tests pass after platform separation.
@@ -41,4 +45,4 @@ These checks validate the implemented software paths. Simulated peers are not th
 - [ ] Exercise USB/Wi-Fi loss and recovery during idle and active sessions.
 - [ ] Monitor memory/stability over an extended real session.
 
-Do not label the pending checklist complete without recording real results. Compatibility with Android Auto, cluster modifications, navigation databases or unrelated payloads is separate from MST-Link's service transport.
+Do not label the pending checklist complete without recording real results. Compatibility with Android Auto, cluster modifications, navigation databases or unrelated payloads is separate from MIB-Link's service transport.

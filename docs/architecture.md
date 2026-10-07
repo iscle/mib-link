@@ -34,9 +34,9 @@ Base address: `http://192.168.4.1`. Request headers and responses are bounded. N
 | `GET /manage/status` | Authentication, cards, payload state, bounded log and progress |
 | `POST /manage/action` | `X-MHI2-Action`: `connect`, `disconnect`, `scan`, `run`, `stop`, `status`, `auto-on`, `auto-off` |
 | `GET /api/settings` | SSID, three `[local,remote]` pairs, active stream count, successfully bound listener count; **no password** |
-| `POST /api/settings` | `X-MST-SSID`, `X-MST-Password`, `X-MST-Forward1` through `X-MST-Forward3` as `local:remote`; save and reboot |
-| `GET /api/console` | Optional decimal `X-MST-Cursor`; output as hex, next cursor, session ID, state, overflow indicator |
-| `POST /api/console` | `X-MST-Action`: `open`, `send`, `close`; `X-MST-Session` and hex `X-MST-Data` for input |
+| `POST /api/settings` | `X-MIB-SSID`, `X-MIB-Password`, `X-MIB-Forward1` through `X-MIB-Forward3` as `local:remote`; save and reboot |
+| `GET /api/console` | Optional decimal `X-MIB-Cursor`; output as hex, next cursor, session ID, state, overflow indicator |
+| `POST /api/console` | `X-MIB-Action`: `open`, `send`, `close`; `X-MIB-Session` and hex `X-MIB-Data` for input |
 
 `connect` uses `X-HU-User` and `X-HU-Password` (up to 64 printable ASCII characters). `run` and `auto-on` use `X-MHI2-Slot` and `X-MHI2-Digest` from the card scan. Credentials are held only in RAM and are omitted from responses. SD selections and digests are validated before entering the fixed command template.
 

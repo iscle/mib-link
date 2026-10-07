@@ -40,13 +40,13 @@ def connect_hu(remote):
 def request_console(a, session="", data=""):
     return http(
         "/api/console",
-        {"X-MST-Action": a, "X-MST-Session": str(session), "X-MST-Data": data},
+        {"X-MIB-Action": a, "X-MIB-Session": str(session), "X-MIB-Data": data},
         "POST",
     )
 
 
 def output(cursor=0):
-    code, body = http("/api/console", {"X-MST-Cursor": str(cursor)})
+    code, body = http("/api/console", {"X-MIB-Cursor": str(cursor)})
     assert code == 200, body
     return json.loads(body)
 
@@ -71,7 +71,7 @@ assert http("/api/settings", {"Host": "attacker.example"})[0] == 403
 assert http("/api/settings", {"Origin": "https://attacker.example"})[0] == 403
 code, body = http("/api/settings")
 s = json.loads(body)
-assert code == 200 and s["ssid"] == "MST-Link"
+assert code == 200 and s["ssid"] == "MIB-Link"
 assert s["forwards"] == [[2323, 23], [2222, 22], [8080, 80]] and s["listeners"] == 3
 assert "password" not in s
 assert request_console("open")[0] == 200
@@ -182,29 +182,29 @@ lib.test_up(0)
 pop()
 assert not output()["connected"]
 settings_headers = {
-    "X-MST-SSID": 'My "MST" link',
-    "X-MST-Password": "easynew1",
-    "X-MST-Forward1": "1234:4321",
-    "X-MST-Forward2": "0:0",
-    "X-MST-Forward3": "8443:443",
+    "X-MIB-SSID": 'My "MIB" link',
+    "X-MIB-Password": "easynew1",
+    "X-MIB-Forward1": "1234:4321",
+    "X-MIB-Forward2": "0:0",
+    "X-MIB-Forward3": "8443:443",
 }
 for key, value in [
-    ("X-MST-Password", "short"),
-    ("X-MST-Forward2", "80:23"),
-    ("X-MST-Forward2", "1234:23"),
-    ("X-MST-Forward1", "65536:23"),
-    ("X-MST-Forward1", "1:0"),
-    ("X-MST-SSID", ""),
-    ("X-MST-SSID", "x" * 33),
-    ("X-MST-SSID", "ok\r\nX-MST-SSID: duplicate"),
+    ("X-MIB-Password", "short"),
+    ("X-MIB-Forward2", "80:23"),
+    ("X-MIB-Forward2", "1234:23"),
+    ("X-MIB-Forward1", "65536:23"),
+    ("X-MIB-Forward1", "1:0"),
+    ("X-MIB-SSID", ""),
+    ("X-MIB-SSID", "x" * 33),
+    ("X-MIB-SSID", "ok\r\nX-MIB-SSID: duplicate"),
 ]:
     assert http("/api/settings", {**settings_headers, key: value}, "POST")[0] == 409, (key, value)
 assert http("/api/settings", settings_headers, "POST")[0] == 200
 code, body = http("/api/settings")
 s = json.loads(body)
-assert s["ssid"] == 'My "MST" link' and s["forwards"][0] == [1234, 4321]
+assert s["ssid"] == 'My "MIB" link' and s["forwards"][0] == [1234, 4321]
 assert b"easynew1" not in body
-assert http("/api/settings", {**settings_headers, "X-MST-Password": ""}, "POST")[0] == 200
+assert http("/api/settings", {**settings_headers, "X-MIB-Password": ""}, "POST")[0] == 200
 print(
     "PASS: console negotiation/overflow/session isolation, three TCP services, half-close/refusal/USB loss, settings validation and HTTP origin checks"
 )

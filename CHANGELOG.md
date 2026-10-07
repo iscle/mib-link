@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Rename the project, repository, firmware downloads, USB identity and API headers to MIB-Link.
+- Default Wi-Fi is now `MIB-Link` / `miblink1`.
+- Use a new settings namespace on both chips; upgrading from an earlier release starts with the new defaults.
+- Apply consistent code formatting across firmware, tools and web UI, with a pinned CI formatting check.
+
 ## 1.1.0
 
 - ESP32-S3 target with native USB ASIX emulation, WPA2 AP, browser console, TCP forwarding and SD management.
@@ -10,9 +17,9 @@
 
 ## 1.0.0
 
-Initial standalone MST-Link release for Raspberry Pi Pico W.
+Initial standalone MIB-Link release for Raspberry Pi Pico W.
 
-- Configurable WPA2 access point with `MST-Link` / `mstlink1` defaults.
+- Configurable WPA2 access point with `MIB-Link` / `miblink1` defaults.
 - Persistent Wi-Fi/TCP settings, alternating CRC flash records and GP15 recovery.
 - Offline responsive UI with SD management, live payload logs and storage progress.
 - Browser Telnet line console with masked input, Ctrl+C and bounded output.

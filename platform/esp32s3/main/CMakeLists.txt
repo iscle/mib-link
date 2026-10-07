@@ -20,7 +20,7 @@ idf_component_register(
            esp_driver_gpio
            esp_hw_support
            lwip
-           mst_tinyusb
+           mib_tinyusb
            usb)
 target_compile_options(${COMPONENT_LIB} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter
                                                 -Wno-misleading-indentation)

@@ -89,7 +89,7 @@ async function refresh() {
   try {
     const [device, m] = await Promise.all([json('/status'), json('/manage/status')]);
     manager = m;
-    text('platform', `${device.board || 'MST-Link'} / USB Ethernet`);
+    text('platform', `${device.board || 'MIB-Link'} / USB Ethernet`);
     text('connection', device.usb_network_up ? 'USB connected' : 'Waiting for USB');
     $('connection').classList.toggle('good', device.usb_network_up);
     text('usb-state', device.usb_network_up ? 'Link up' : 'Not connected');
@@ -120,7 +120,7 @@ async function refresh() {
   } catch (error) {
     text('connection', 'Device unreachable');
     $('connection').classList.remove('good');
-    text('manager-status', 'Reconnect to MST-Link Wi-Fi to refresh status.');
+    text('manager-status', 'Reconnect to MIB-Link Wi-Fi to refresh status.');
   } finally {
     refreshPending = false;
   }
@@ -191,9 +191,9 @@ $('autorun').onchange = guarded(async () => {
   );
 });
 $('settings-form').onsubmit = guarded(async () => {
-  const headers = { 'X-MST-SSID': $('ssid').value, 'X-MST-Password': $('wifi-password').value };
+  const headers = { 'X-MIB-SSID': $('ssid').value, 'X-MIB-Password': $('wifi-password').value };
   for (let i = 0; i < 3; i++)
-    headers[`X-MST-Forward${i + 1}`] = `${$(`local-${i}`).value}:${$(`remote-${i}`).value}`;
+    headers[`X-MIB-Forward${i + 1}`] = `${$(`local-${i}`).value}:${$(`remote-${i}`).value}`;
   await request('/api/settings', headers, 'POST');
   $('wifi-password').value = '';
   notice(
@@ -207,7 +207,7 @@ async function consoleAction(action, data = '') {
   ).join('');
   await request(
     '/api/console',
-    { 'X-MST-Action': action, 'X-MST-Session': String(session), 'X-MST-Data': hex },
+    { 'X-MIB-Action': action, 'X-MIB-Session': String(session), 'X-MIB-Data': hex },
     'POST',
   );
 }
@@ -255,13 +255,13 @@ async function pollConsole() {
   if (consolePending) return;
   consolePending = true;
   try {
-    let s = await json('/api/console', { 'X-MST-Cursor': String(cursor) });
+    let s = await json('/api/console', { 'X-MIB-Cursor': String(cursor) });
     if (session !== s.session) {
       session = s.session;
       cursor = 0;
       escapeState = 0;
       $('terminal').textContent = '';
-      s = await json('/api/console', { 'X-MST-Cursor': '0' });
+      s = await json('/api/console', { 'X-MIB-Cursor': '0' });
     }
     if (s.lost) appendTerminal('\n[Older output expired from the device buffer]\n');
     appendTerminal(terminalText(Array.from(s.data.match(/../g) || [], (h) => parseInt(h, 16))));

@@ -76,8 +76,8 @@ int main(void)
 {
     memset(fake_flash, 255, sizeof(fake_flash));
     settings_init();
-    assert(!strcmp(settings.ssid, "MST-Link"));
-    struct mst_settings next = settings;
+    assert(!strcmp(settings.ssid, "MIB-Link"));
+    struct mib_settings next = settings;
     strcpy(next.ssid, "Personal network");
     assert(settings_save(&next));
     assert(erased == 1 && programmed == 1);
@@ -108,7 +108,7 @@ int main(void)
     assert(!strcmp(settings.ssid, "Second network"));
     recovery = 1;
     settings_init();
-    assert(!strcmp(settings.ssid, "MST-Link"));
+    assert(!strcmp(settings.ssid, "MIB-Link"));
     recovery = 0;
     settings_init();
     assert(!strcmp(settings.ssid, "Second network"));

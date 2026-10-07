@@ -46,9 +46,9 @@ jobs:
         run: npm test
       - uses: actions/upload-artifact@v4
         with:
-          name: mst-link-pico-w
+          name: mib-link-pico-w
           path: |
-            dist/mst-link-pico-w.uf2
+            dist/mib-link-pico-w.uf2
             dist/SHA256SUMS
           if-no-files-found: error
 
@@ -67,8 +67,8 @@ jobs:
           python3 tests/check_esp32s3.py
       - uses: actions/upload-artifact@v4
         with:
-          name: mst-link-esp32s3
+          name: mib-link-esp32s3
           path: |
-            dist/mst-link-esp32s3.zip
+            dist/mib-link-esp32s3.zip
             dist/ESP32S3-SHA256SUMS
           if-no-files-found: error

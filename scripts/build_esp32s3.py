@@ -40,13 +40,13 @@ def build():
         ],
         check=True,
     )
-    manifest = {"chip": "esp32s3", "version": "1.1.0", "flash_size": "4MB", "images": []}
+    manifest = {"chip": "esp32s3", "version": "1.2.0", "flash_size": "4MB", "images": []}
     bundle = ROOT / "dist/esp32s3"
     bundle.mkdir(parents=True, exist_ok=True)
     for offset, source, name in [
         ("0x0", "bootloader/bootloader.bin", "bootloader.bin"),
         ("0x8000", "partition_table/partition-table.bin", "partition-table.bin"),
-        ("0x10000", "mst_link.bin", "mst-link-esp32s3.bin"),
+        ("0x10000", "mib_link.bin", "mib-link-esp32s3.bin"),
     ]:
         shutil.copy2(output / source, bundle / name)
         manifest["images"].append(
@@ -59,24 +59,24 @@ def build():
     (bundle / "flash.json").write_text(json.dumps(manifest, indent=2) + "\n")
     shutil.copy2(ROOT / "scripts/flash_esp32s3.py", bundle / "flash.py")
     (bundle / "README.txt").write_text(
-        "MST-Link 1.1.0 — ESP32-S3, >=4 MB flash, no PSRAM required\n\n"
+        "MIB-Link 1.2.0 — ESP32-S3, >=4 MB flash, no PSRAM required\n\n"
         "Use the native USB connector (GPIO19 D-, GPIO20 D+), not a USB-UART connector.\n"
         "Enter ROM download mode with BOOT held during reset, then release BOOT.\n"
         'Install esptool 4.12 or 5.x: python3 -m pip install "esptool>=4.12,<6"\n'
         "Flash: python3 flash.py --port YOUR_SERIAL_PORT\n"
         "The script verifies all images and preserves the NVS settings region.\n"
         "Do not flash the application binary alone at address 0.\n"
-        "After flashing reset normally, then connect to MST-Link / mstlink1 and open http://192.168.4.1/.\n"
+        "After flashing reset normally, then connect to MIB-Link / miblink1 and open http://192.168.4.1/.\n"
         "Recovery: ground GPIO4 during application startup, then remove jumper and save new settings.\n"
         "No HU credentials are embedded. Physical HU acceptance is pending.\n"
-        "Full instructions: https://github.com/iscle/mst-link/blob/main/docs/esp32s3.md\n"
+        "Full instructions: https://github.com/iscle/mib-link/blob/main/docs/esp32s3.md\n"
     )
-    archive = ROOT / "dist/mst-link-esp32s3.zip"
+    archive = ROOT / "dist/mib-link-esp32s3.zip"
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
         for name in [
             "bootloader.bin",
             "partition-table.bin",
-            "mst-link-esp32s3.bin",
+            "mib-link-esp32s3.bin",
             "flash.json",
             "flash.py",
             "README.txt",

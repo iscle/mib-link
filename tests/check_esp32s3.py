@@ -36,7 +36,7 @@ def image(data):
         assert end + 32 == len(data)
 
 
-archive = ROOT / "dist/mst-link-esp32s3.zip"
+archive = ROOT / "dist/mib-link-esp32s3.zip"
 assert (
     hashlib.sha256(archive.read_bytes()).hexdigest()
     == (ROOT / "dist/ESP32S3-SHA256SUMS").read_text().split()[0]
@@ -47,7 +47,7 @@ with tempfile.TemporaryDirectory() as temp:
         assert set(z.namelist()) == {
             "bootloader.bin",
             "partition-table.bin",
-            "mst-link-esp32s3.bin",
+            "mib-link-esp32s3.bin",
             "flash.json",
             "flash.py",
             "README.txt",
@@ -55,7 +55,7 @@ with tempfile.TemporaryDirectory() as temp:
         z.extractall(root)
     manifest = json.loads((root / "flash.json").read_text())
     assert manifest["chip"] == "esp32s3"
-    for name in ["bootloader.bin", "mst-link-esp32s3.bin"]:
+    for name in ["bootloader.bin", "mib-link-esp32s3.bin"]:
         image((root / name).read_bytes())
     table = (root / "partition-table.bin").read_bytes()
     partitions = {}
@@ -87,7 +87,7 @@ with tempfile.TemporaryDirectory() as temp:
             return
         raise AssertionError("Unsafe flash bundle accepted")
 
-    p = root / "mst-link-esp32s3.bin"
+    p = root / "mib-link-esp32s3.bin"
     original = p.read_bytes()
     p.write_bytes(b"bad" + original[3:])
     rejected()

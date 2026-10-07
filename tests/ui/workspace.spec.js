@@ -30,7 +30,7 @@ async function fixture(page) {
     } else
       await route.fulfill({
         json: {
-          ssid: 'MST-Link',
+          ssid: 'MIB-Link',
           forwards: [
             [2323, 23],
             [2222, 22],
@@ -45,8 +45,8 @@ async function fixture(page) {
     const req = route.request();
     if (req.method() === 'POST') {
       calls.push(req);
-      if (req.headers()['x-mst-action'] === 'open') opened = true;
-      if (req.headers()['x-mst-action'] === 'close') opened = false;
+      if (req.headers()['x-mib-action'] === 'open') opened = true;
+      if (req.headers()['x-mib-action'] === 'close') opened = false;
       await route.fulfill({ body: 'OK' });
     } else
       await route.fulfill({
@@ -57,7 +57,7 @@ async function fixture(page) {
           status: opened ? 'Connected' : 'Disconnected',
           next: opened ? 7 : 0,
           lost: false,
-          data: opened && req.headers()['x-mst-cursor'] === '0' ? '6c6f67696e3a20' : '',
+          data: opened && req.headers()['x-mib-cursor'] === '0' ? '6c6f67696e3a20' : '',
         },
       });
   });
@@ -89,15 +89,15 @@ test('workspace layout, keyboard navigation, login and no external dependencies'
 test('editable Wi-Fi and arbitrary TCP mappings', async ({ page }) => {
   const calls = await fixture(page);
   await page.getByRole('button', { name: 'Wi-Fi & services' }).click();
-  await expect(page.locator('#ssid')).toHaveValue('MST-Link');
-  await page.locator('#ssid').fill('My MST');
+  await expect(page.locator('#ssid')).toHaveValue('MIB-Link');
+  await page.locator('#ssid').fill('My MIB');
   await page.locator('#wifi-password').fill('newlink1');
   await page.locator('#local-0').fill('6000');
   await page.locator('#remote-0').fill('12345');
   await page.getByRole('button', { name: 'Save & restart device' }).click();
   await expect(page.locator('#notice')).toContainText('Settings saved');
-  expect(calls.at(-1).headers()['x-mst-forward1']).toBe('6000:12345');
-  expect(calls.at(-1).headers()['x-mst-ssid']).toBe('My MST');
+  expect(calls.at(-1).headers()['x-mib-forward1']).toBe('6000:12345');
+  expect(calls.at(-1).headers()['x-mib-ssid']).toBe('My MIB');
   await expect(page.locator('#wifi-password')).toHaveValue('');
 });
 test('console prompts, password masking and Ctrl+C', async ({ page }) => {
@@ -110,9 +110,9 @@ test('console prompts, password masking and Ctrl+C', async ({ page }) => {
   await page.locator('#command').fill('secret');
   await page.getByRole('button', { name: 'Send ↵' }).click();
   await expect(page.locator('#command')).toHaveValue('');
-  expect(calls.at(-1).headers()['x-mst-data']).toBe('7365637265740d0a');
+  expect(calls.at(-1).headers()['x-mib-data']).toBe('7365637265740d0a');
   await page.getByRole('button', { name: 'Ctrl+C', exact: true }).click();
-  expect(calls.at(-1).headers()['x-mst-data']).toBe('03');
+  expect(calls.at(-1).headers()['x-mib-data']).toBe('03');
   await page.getByRole('button', { name: 'Disconnect', exact: true }).click();
   await expect(page.locator('#console-state')).toHaveText('Disconnected');
 });

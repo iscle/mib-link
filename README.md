@@ -1,20 +1,20 @@
 <div align="center">
 
-# MST-Link
+# MIB-Link
 
 **A direct link to your head unit.**
 
 Wi-Fi management, an interactive console, and native TCP service access — on **Raspberry Pi Pico W (RP2040)** or **ESP32-S3**.
 
-[Download firmware](https://github.com/iscle/mst-link/releases/latest) · [Getting started](#getting-started) · [Build from source](docs/building.md) · [API & architecture](docs/architecture.md)
+[Download firmware](https://github.com/iscle/mib-link/releases/latest) · [Getting started](#getting-started) · [Build from source](docs/building.md) · [API & architecture](docs/architecture.md)
 
 ![Platforms](https://img.shields.io/badge/platforms-RP2040_Pico_W_%7C_ESP32--S3-007e71)
 ![License](https://img.shields.io/badge/license-GPL--3.0--or--later-172d3c)
-[![Checks](https://github.com/iscle/mst-link/actions/workflows/check.yml/badge.svg)](https://github.com/iscle/mst-link/actions/workflows/check.yml)
+[![Checks](https://github.com/iscle/mib-link/actions/workflows/check.yml/badge.svg)](https://github.com/iscle/mib-link/actions/workflows/check.yml)
 
 </div>
 
-![MST-Link overview on desktop](docs/overview.png)
+![MIB-Link overview on desktop](docs/overview.png)
 
 *The screenshot uses simulated connection status. It shows the actual offline UI embedded in the firmware.*
 
@@ -26,7 +26,7 @@ Wi-Fi management, an interactive console, and native TCP service access — on *
 - **SD payload management.** Discover manifest-based bundles, select one, stage verified files in head-unit RAM, run it, monitor its output and progress, and request cleanup. Auto-run is opt-in and trusts one exact bundle digest.
 - **A small, self-contained firmware.** No cloud account, management key, external web fonts, CDN, or embedded head-unit password.
 
-MST-Link provides access to services that the head unit already exposes. It does not enable disabled services, bypass their authentication, or include an Android Auto/cluster modification.
+MIB-Link provides access to services that the head unit already exposes. It does not enable disabled services, bypass their authentication, or include an Android Auto/cluster modification.
 
 ## Compatibility
 
@@ -38,7 +38,7 @@ MST-Link provides access to services that the head unit already exposes. It does
 | Head unit | MHI2/QNX unit accepting the emulated ASIX USB Ethernet adapter |
 | Service address | `172.16.250.248` on the head unit; adapter USB address `172.16.250.1` |
 | SD management | Stock Telnet service on port 23, valid credentials, QNX ARM runtime, and the expected SD mount layout |
-| Browser | Modern browser connected to MST-Link Wi-Fi |
+| Browser | Modern browser connected to MIB-Link Wi-Fi |
 
 The predecessor's stock USB service/login path was reported working on Porsche **MHI2_ER_POG11_P5250**. This standalone release adds new settings, UI, console, and forwarding code. Automated validation is documented [below](#validation); **the new firmware still needs a physical head-unit acceptance test**. The ESP32-S3 port is cross-compiled and automated-tested; physical ESP32-S3 USB/Wi-Fi acceptance is pending. Other head-unit trains, Pico 2 W, non-W RP2040 boards, and other ESP32 variants are not validated. See [ESP32-S3 setup](docs/esp32s3.md).
 
@@ -46,19 +46,21 @@ The USB descriptor uses the existing driver's `2001:3c05` compatibility identity
 
 ## Getting started
 
-1. Download the package for your board from [Releases](https://github.com/iscle/mst-link/releases/latest):
-   - **Pico W:** `mst-link-pico-w.uf2`. Hold **BOOTSEL** while connecting it to your computer, then copy the UF2 to **RPI-RP2**.
-   - **ESP32-S3:** `mst-link-esp32s3.zip`. Extract it, enter ROM download mode with **BOOT held during reset**, then run `python3 flash.py --port YOUR_SERIAL_PORT`. Install `esptool` 4.12 or 5.x first. Follow the [ESP32-S3 guide](docs/esp32s3.md) for wiring and flashing details.
+1. Download the package for your board from [Releases](https://github.com/iscle/mib-link/releases/latest):
+   - **Pico W:** `mib-link-pico-w.uf2`. Hold **BOOTSEL** while connecting it to your computer, then copy the UF2 to **RPI-RP2**.
+   - **ESP32-S3:** `mib-link-esp32s3.zip`. Extract it, enter ROM download mode with **BOOT held during reset**, then run `python3 flash.py --port YOUR_SERIAL_PORT`. Install `esptool` 4.12 or 5.x first. Follow the [ESP32-S3 guide](docs/esp32s3.md) for wiring and flashing details.
 2. Connect the adapter to a supported head-unit USB port using a data cable.
 3. Join its Wi-Fi network and open **<http://192.168.4.1/>**. Accept your device's option to remain connected without Internet.
 4. Set a personal Wi-Fi password under **Wi-Fi & services**. Saving restarts the device; reconnect using the new settings.
 
 | Factory setting | Value |
 | --- | --- |
-| Wi-Fi name | `MST-Link` |
-| Wi-Fi password | `mstlink1` |
+| Wi-Fi name | `MIB-Link` |
+| Wi-Fi password | `miblink1` |
 | Management page | `http://192.168.4.1/` |
 | Management key | None |
+
+**Upgrading from a release before 1.2.0:** this release starts with the new Wi-Fi defaults on both boards. Reapply your Wi-Fi and TCP mapping settings after connecting. Existing head-unit credentials were RAM-only and are never embedded in the public firmware.
 
 Wi-Fi names accept 1–32 printable ASCII characters. Passwords accept 8–63. Leave the password field empty to keep the existing password. The settings API never returns the saved password.
 
@@ -92,7 +94,7 @@ Click **Disconnect** when finished. Closing the browser alone leaves the session
 
 ## Run a script from an SD card
 
-MST-Link keeps the existing **`mhi2/manifest.json`** bundle format for compatibility. An SD card must contain:
+MIB-Link keeps the existing **`mhi2/manifest.json`** bundle format for compatibility. An SD card must contain:
 
 ```text
 mhi2/
@@ -132,7 +134,7 @@ If you cannot connect, ground the recovery pin while powering on:
 | Pico W | **GP15 (physical pin 20)** to **GND (physical pin 18)** | Hold BOOTSEL while connecting USB |
 | ESP32-S3 | **GPIO4** to GND (configurable at build time) | Hold BOOT/GPIO0 during reset, then release it |
 
-The application uses `MST-Link` / `mstlink1` for that boot. Remove the recovery jumper, connect, and save new settings. Without saving, the previous settings return on the next normal boot. On ESP32-S3, BOOT/GPIO0 selects the ROM downloader and is **not** the settings recovery input. Only ground the documented recovery pin; do not connect it to a power pin.
+The application uses `MIB-Link` / `miblink1` for that boot. Remove the recovery jumper, connect, and save new settings. Without saving, the previous settings return on the next normal boot. On ESP32-S3, BOOT/GPIO0 selects the ROM downloader and is **not** the settings recovery input. Only ground the documented recovery pin; do not connect it to a power pin.
 
 ## Build and contribute
 
@@ -168,7 +170,7 @@ These tests use simulated head-unit traffic and mocked browser API responses. Th
 
 ## License
 
-MST-Link source is **GPL-3.0-or-later**. Third-party components retain their original licenses; see [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and [licenses/](licenses/). No OEM firmware, proprietary QNX headers, vehicle dumps, or private login credentials are included.
+MIB-Link source is **GPL-3.0-or-later**. Third-party components retain their original licenses; see [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and [licenses/](licenses/). No OEM firmware, proprietary QNX headers, vehicle dumps, or private login credentials are included.
 
 ## Contributing
 

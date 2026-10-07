@@ -2,7 +2,7 @@
 #include "console.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "mst_platform.h"
+#include "mib_platform.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +17,7 @@ static const char *status = "Disconnected";
 
 static uint32_t now(void)
 {
-    return mst_now_ms();
+    return mib_now_ms();
 }
 
 static void close_console(const char *message)

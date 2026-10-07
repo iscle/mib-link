@@ -1,6 +1,6 @@
 # Third-party notices
 
-MST-Link is GPL-3.0-or-later. SPDX identifiers apply to the project's C sources; the same project license covers its scripts, web interface, tests and documentation unless stated otherwise.
+MIB-Link is GPL-3.0-or-later. SPDX identifiers apply to the project's C sources; the same project license covers its scripts, web interface, tests and documentation unless stated otherwise.
 
 - ESP-IDF v5.5.2: Apache-2.0 with component-specific licenses and redistributable Espressif libraries. See `licenses/esp-idf.txt`, `licenses/esp-{wifi,phy,coex}.txt`, the pinned SDK source and its component notices. ESP32-S3 firmware includes Espressif Wi-Fi/PHY libraries, not OEM head-unit code.
 - Raspberry Pi Pico SDK: BSD-3-Clause and component-specific licenses. Pinned in `build.py`; notice in `licenses/pico-sdk.txt`.

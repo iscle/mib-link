@@ -5,7 +5,7 @@
 #include "settings.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "mst_platform.h"
+#include "mib_platform.h"
 #include <string.h>
 #define CONNECTIONS 3
 struct relay;
@@ -29,7 +29,7 @@ static unsigned listeners;
 
 static uint32_t now(void)
 {
-    return mst_now_ms();
+    return mib_now_ms();
 }
 
 static void drop(struct relay *r)
@@ -128,7 +128,7 @@ static err_t connected(void *arg, struct tcp_pcb *pcb, err_t err)
 
 static err_t accept_connection(void *arg, struct tcp_pcb *pcb, err_t err)
 {
-    const struct mst_forward *f = arg;
+    const struct mib_forward *f = arg;
     if (!netif_is_link_up(&usb_netif) ||
         (f->remote == 23 && (manager_busy() || console_active() || forward_manual()))) {
         tcp_abort(pcb);
@@ -171,7 +171,7 @@ static err_t accept_connection(void *arg, struct tcp_pcb *pcb, err_t err)
 void forward_init(const ip_addr_t *ap, const ip_addr_t *hu)
 {
     target = *hu;
-    for (unsigned i = 0; i < MST_FORWARD_COUNT; i++) {
+    for (unsigned i = 0; i < MIB_FORWARD_COUNT; i++) {
         if (!settings.forwards[i].local)
             continue;
         struct tcp_pcb *p = tcp_new();

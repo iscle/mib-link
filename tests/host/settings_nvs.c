@@ -7,14 +7,14 @@ static size_t length, pending_length;
 static unsigned millis, writes, reboots;
 static int open_error, set_error, commit_error, recovery;
 
-uint32_t mst_now_ms(void)
+uint32_t mib_now_ms(void)
 {
     return millis;
 }
 
 esp_err_t nvs_open(const char *name, int mode, nvs_handle_t *h)
 {
-    assert(!strcmp(name, "mst-link"));
+    assert(!strcmp(name, "mib-link"));
     *h = 1;
     return open_error;
 }
@@ -77,8 +77,8 @@ void esp_restart(void)
 int main(void)
 {
     settings_init();
-    assert(!strcmp(settings.ssid, "MST-Link"));
-    struct mst_settings next = settings;
+    assert(!strcmp(settings.ssid, "MIB-Link"));
+    struct mib_settings next = settings;
     strcpy(next.ssid, "S3 network");
     assert(settings_save(&next));
     assert(writes == 1 && !settings_save(&next));
@@ -103,17 +103,17 @@ int main(void)
     assert(!strcmp(settings.ssid, "S3 network") && writes == 1);
     recovery = 1;
     settings_init();
-    assert(!strcmp(settings.ssid, "MST-Link"));
+    assert(!strcmp(settings.ssid, "MIB-Link"));
     recovery = 0;
     settings_init();
     assert(!strcmp(settings.ssid, "S3 network"));
     storage[0] = 2;
     settings_init();
-    assert(!strcmp(settings.ssid, "MST-Link"));
+    assert(!strcmp(settings.ssid, "MIB-Link"));
     assert(settings_save(&next));
     length--;
     settings_init();
-    assert(!strcmp(settings.ssid, "MST-Link"));
+    assert(!strcmp(settings.ssid, "MIB-Link"));
     strcpy(next.password, "short");
     assert(!settings_save(&next));
     puts("PASS: ESP32-S3 NVS defaults, version/length validation, failed saves, delayed restart, "

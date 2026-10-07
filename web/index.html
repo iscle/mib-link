@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#f5f7fa" />
-    <title>MST-Link · Head-unit workspace</title>
+    <title>MIB-Link · Head-unit workspace</title>
     <style>
       /*__CSS__*/
     </style>
@@ -13,7 +13,7 @@
     <header>
       <a class="brand" href="#overview"
         ><span class="mark" aria-hidden="true">m<span>↗</span></span
-        ><span>MST-Link<small>YOUR HEAD UNIT. CONNECTED.</small></span></a
+        ><span>MIB-Link<small>YOUR HEAD UNIT. CONNECTED.</small></span></a
       ><span id="connection" class="pill">Connecting…</span>
     </header>
     <main>
@@ -23,7 +23,7 @@
           <h1>A direct link to your head unit.</h1>
           <p class="muted">Manage SD payloads, open a console, or connect with your own tools.</p>
         </div>
-        <span class="version">v1.1.0</span>
+        <span class="version">v1.2.0</span>
       </div>
       <nav aria-label="Workspace">
         <button data-tab="overview" class="selected" aria-current="page">Overview</button
@@ -85,7 +85,7 @@
               </select></label
             >
             <p id="bundle-detail" class="caption">
-              MST-Link reads the <code>mhi2/manifest.json</code> bundle format.
+              MIB-Link reads the <code>mhi2/manifest.json</code> bundle format.
             </p>
             <div class="actions">
               <button id="run" class="primary" disabled>Run payload</button
@@ -144,7 +144,7 @@ Your payload’s output will appear here.</pre
             aria-label="Head-unit console output"
             tabindex="0"
           >
-MST-Link console. Open a connection to begin.
+MIB-Link console. Open a connection to begin.
 </pre
           >
           <form id="console-input" class="console-input">
@@ -175,7 +175,7 @@ MST-Link console. Open a connection to begin.
             <article class="card">
               <div class="card-title"><h2>Your Wi-Fi network</h2></div>
               <p class="muted">
-                Settings are saved on the device. Saving restarts MST-Link and disconnects Wi-Fi.
+                Settings are saved on the device. Saving restarts MIB-Link and disconnects Wi-Fi.
               </p>
               <label
                 >Network name<input
@@ -195,7 +195,7 @@ MST-Link console. Open a connection to begin.
               /></label>
               <p class="caption">
                 1–32 characters for the name; 8–63 for the password. Printable ASCII. Factory
-                defaults: <code>MST-Link</code> / <code>mstlink1</code>.
+                defaults: <code>MIB-Link</code> / <code>miblink1</code>.
               </p>
               <aside>
                 Anyone connected to this Wi-Fi can access the console and management controls. Set a
@@ -205,7 +205,7 @@ MST-Link console. Open a connection to begin.
             <article class="card">
               <div class="card-title"><h2>Direct service access</h2></div>
               <p class="muted">
-                Connect any TCP client to <code>192.168.4.1</code>. MST-Link forwards the stream to
+                Connect any TCP client to <code>192.168.4.1</code>. MIB-Link forwards the stream to
                 the head unit, unchanged.
               </p>
               <div class="port-head"><span>Local port</span><span>Head-unit port</span></div>
@@ -229,8 +229,8 @@ MST-Link console. Open a connection to begin.
         </form>
       </section>
       <footer>
-        <span>MST-Link <span class="muted">/ Made for a closer connection.</span></span
-        ><a href="https://github.com/iscle/mst-link" target="_blank" rel="noreferrer"
+        <span>MIB-Link <span class="muted">/ Made for a closer connection.</span></span
+        ><a href="https://github.com/iscle/mib-link" target="_blank" rel="noreferrer"
           >Source & documentation ↗</a
         >
       </footer>

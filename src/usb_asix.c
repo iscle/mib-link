@@ -2,7 +2,7 @@
 #include "usb_asix.h"
 #include "tusb.h"
 #include "device/usbd_pvt.h"
-#include "mst_platform.h"
+#include "mib_platform.h"
 #include "lwip/etharp.h"
 #include "netif/ethernet.h"
 #include <string.h>
@@ -30,7 +30,7 @@ static struct {
 static unsigned tx_head, tx_count;
 static bool tx_pending;
 static uint32_t last_status;
-static char serial[MST_SERIAL_SIZE];
+static char serial[MIB_SERIAL_SIZE];
 
 static const tusb_desc_device_t device_descriptor = {.bLength = sizeof(tusb_desc_device_t),
                                                      .bDescriptorType = TUSB_DESC_DEVICE,
@@ -54,7 +54,7 @@ static const uint8_t configuration[] = {9,
                                         1,
                                         0,
                                         0x80,
-                                        MST_USB_POWER_UNITS,
+                                        MIB_USB_POWER_UNITS,
                                         9,
                                         TUSB_DESC_INTERFACE,
                                         0,
@@ -108,10 +108,10 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid)
     }
     switch (index) {
     case 1:
-        value = "MST-Link";
+        value = "MIB-Link";
         break;
     case 2:
-        value = "MST-Link USB Ethernet";
+        value = "MIB-Link USB Ethernet";
         break;
     case 3:
         value = serial;
@@ -172,7 +172,7 @@ static err_t netif_init_cb(struct netif *netif)
 {
     netif->name[0] = 'u';
     netif->name[1] = 's';
-    netif->hostname = "mst-link";
+    netif->hostname = "mib-link";
     netif->output = etharp_output;
     netif->linkoutput = link_output;
     netif->mtu = 1500;
@@ -291,7 +291,7 @@ usbd_class_driver_t const *usbd_app_driver_get_cb(uint8_t *count)
 
 void usb_network_init(void)
 {
-    mst_usb_identity(initial_mac, serial, sizeof(serial));
+    mib_usb_identity(initial_mac, serial, sizeof(serial));
     asix_init(&adapter, initial_mac);
     ip4_addr_t ip, mask, gw;
     IP4_ADDR(&ip, 172, 16, 250, 1);
@@ -313,7 +313,7 @@ void usb_network_poll(void)
         else
             netif_set_link_down(&usb_netif);
     }
-    uint32_t now = mst_now_ms();
+    uint32_t now = mib_now_ms();
     if (endpoints_open && tud_mounted() && now - last_status >= 250 &&
         !usbd_edpt_busy(0, EP_STATUS)) {
         last_status = now;

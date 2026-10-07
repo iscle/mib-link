@@ -21,12 +21,12 @@ static struct {
 
 static unsigned tail, head;
 
-const char *mst_board_name(void)
+const char *mib_board_name(void)
 {
     return "Host test";
 }
 
-uint32_t mst_now_ms(void)
+uint32_t mib_now_ms(void)
 {
     return millis;
 }

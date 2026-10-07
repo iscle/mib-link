@@ -1,4 +1,4 @@
-# Building MST-Link
+# Building MIB-Link
 
 Build targets are `pico-w` (default) and `esp32s3`. This page covers Pico W and shared tests; see [esp32s3.md](esp32s3.md) for the ESP-IDF setup, pin mapping, NVS settings, and flashing instructions.
 
@@ -23,9 +23,9 @@ An existing SDK can be selected with `PICO_SDK_PATH`; the build rejects a differ
 Outputs:
 
 ```text
-dist/mst-link-pico-w.uf2   # flash this file on Pico W
-dist/mst-link-pico-w.bin   # byte-for-byte firmware image
-dist/mst-link-pico-w.elf   # debugging symbols
+dist/mib-link-pico-w.uf2   # flash this file on Pico W
+dist/mib-link-pico-w.bin   # byte-for-byte firmware image
+dist/mib-link-pico-w.elf   # debugging symbols
 dist/SHA256SUMS
 ```
 

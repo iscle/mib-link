@@ -8,7 +8,7 @@
 #include "payload.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "mst_platform.h"
+#include "mib_platform.h"
 #include "tusb.h"
 #include <stdio.h>
 #include <string.h>
@@ -17,7 +17,7 @@
 
 static uint32_t now_ms(void)
 {
-    return mst_now_ms();
+    return mib_now_ms();
 }
 
 static ip_addr_t hu_address;
@@ -137,7 +137,7 @@ static bool header_value(const char *request, const char *name, char *out, size_
     return true;
 }
 
-static bool port_pair(const char *text, struct mst_forward *f)
+static bool port_pair(const char *text, struct mib_forward *f)
 {
     unsigned values[2] = {0, 0}, part = 0, digits = 0;
     for (; *text; text++) {
@@ -289,7 +289,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err
                    strstr(c->request, " /probe ");
     if (!host_ok || !origin_ok || (control && !ap)) {
         status = "403 Forbidden";
-        body = "Connect directly to the MST-Link Wi-Fi address\n";
+        body = "Connect directly to the MIB-Link Wi-Fi address\n";
     } else if (!strncmp(c->request, "GET /api/settings HTTP/1.", 24)) {
         char ssid[68];
         json_string(ssid, settings.ssid);
@@ -304,15 +304,15 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err
         c->asset_copy = true;
         type = "application/json";
     } else if (!strncmp(c->request, "POST /api/settings HTTP/1.", 25)) {
-        struct mst_settings next = settings;
+        struct mib_settings next = settings;
         char pass[64] = {0}, pairs[3][16];
-        bool valid = header_value(c->request, "X-MST-SSID", next.ssid, sizeof(next.ssid)) &&
-                     header_value(c->request, "X-MST-Password", pass, sizeof(pass));
+        bool valid = header_value(c->request, "X-MIB-SSID", next.ssid, sizeof(next.ssid)) &&
+                     header_value(c->request, "X-MIB-Password", pass, sizeof(pass));
         if (*pass)
             strcpy(next.password, pass);
         for (unsigned i = 0; i < 3; i++) {
             char key[16];
-            snprintf(key, sizeof(key), "X-MST-Forward%u", i + 1);
+            snprintf(key, sizeof(key), "X-MIB-Forward%u", i + 1);
             valid = valid && header_value(c->request, key, pairs[i], sizeof(pairs[i])) &&
                     port_pair(pairs[i], &next.forwards[i]);
         }
@@ -328,7 +328,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err
         memset(&next, 0, sizeof(next));
     } else if (!strncmp(c->request, "GET /api/console HTTP/1.", 23)) {
         char cursor[16];
-        if (!header_value(c->request, "X-MST-Cursor", cursor, sizeof(cursor)) ||
+        if (!header_value(c->request, "X-MIB-Cursor", cursor, sizeof(cursor)) ||
             !console_json(c->response, sizeof(c->response), cursor)) {
             status = "400 Bad Request";
             body = "Invalid cursor\n";
@@ -340,9 +340,9 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err
         }
     } else if (!strncmp(c->request, "POST /api/console HTTP/1.", 24)) {
         char action[16], id[16], data[513];
-        bool valid = header_value(c->request, "X-MST-Action", action, sizeof(action)) &&
-                     header_value(c->request, "X-MST-Session", id, sizeof(id)) &&
-                     header_value(c->request, "X-MST-Data", data, sizeof(data));
+        bool valid = header_value(c->request, "X-MIB-Action", action, sizeof(action)) &&
+                     header_value(c->request, "X-MIB-Session", id, sizeof(id)) &&
+                     header_value(c->request, "X-MIB-Data", data, sizeof(data));
         if (valid && (!strcmp(action, "open") ? !manager_busy() && !forward_manual() : true) &&
             console_action(action, id, data))
             body = "OK\n";
@@ -385,13 +385,13 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err
         }
     } else if (!strncmp(c->request, "GET /status HTTP/1.", 19)) {
         snprintf(json, sizeof(json),
-                 "{\"build\":\"1.1.0-mst-link\",\"board\":\"%s\",\"android_auto_payload\":false,"
+                 "{\"build\":\"1.2.0-mib-link\",\"board\":\"%s\",\"android_auto_payload\":false,"
                  "\"usb_mounted\":%s,"
                  "\"usb_network_up\":%s,\"control_requests\":%lu,\"rejected_requests\":%lu,"
                  "\"last_rejected_request\":%u,\"frames_from_hu\":%lu,\"frames_to_hu\":%u,"
                  "\"malformed_frames\":%lu,\"dropped_frames\":%u,\"service_probe\":\"%s\","
                  "\"banner_bytes\":%u,\"banner_hex\":\"%s\",\"deployment\":\"%s\"}\n",
-                 mst_board_name(), tud_mounted() ? "true" : "false",
+                 mib_board_name(), tud_mounted() ? "true" : "false",
                  netif_is_link_up(&usb_netif) ? "true" : "false", (unsigned long)adapter.controls,
                  (unsigned long)adapter.rejected_controls, adapter.last_rejected,
                  (unsigned long)adapter.rx_frames, usb_tx_frames,

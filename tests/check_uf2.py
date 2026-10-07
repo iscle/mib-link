@@ -6,7 +6,7 @@ import struct
 import argparse
 
 ROOT = Path(__file__).resolve().parents[1]
-stem = "mst-link-pico-w"
+stem = "mib-link-pico-w"
 path = ROOT / "dist" / (stem + ".uf2")
 raw = path.read_bytes()
 binary = (ROOT / "dist" / (stem + ".bin")).read_bytes()
@@ -26,7 +26,7 @@ for number in range(count):
 restored = b"".join(flash[at] for at in range(0x10000000, max(flash) + 256, 256))
 assert restored[: len(binary)] == binary
 assert not any(restored[len(binary) :])
-assert b"MST-Link" in binary and b"mstlink1" in binary
+assert b"MIB-Link" in binary and b"miblink1" in binary
 assert b"test-only-password" not in binary
 digest = hashlib.sha256(raw).hexdigest()
 assert (ROOT / "dist" / "SHA256SUMS").read_text().split()[0] == digest

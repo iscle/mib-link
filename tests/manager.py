@@ -19,7 +19,7 @@ subprocess.run(
         "-fPIC",
         "-g",
         "-O1",
-        "-DMST_HOST_TEST=1",
+        "-DMIB_HOST_TEST=1",
         "-Itests/host",
         "-Igenerated",
         "-Isrc",
@@ -112,7 +112,7 @@ assert http(key=None)[0] == 200
 assert http(key="obsolete-key")[0] == 200
 assert http("/manage/action", {"X-MHI2-Action": "scan\r\nX-MHI2-Action: stop"}, "POST")[0] == 409
 assert http("/manage/action", {}, "POST")[0] == 409
-assert b"MST-Link" in http("/", key=None)[1]
+assert b"MIB-Link" in http("/", key=None)[1]
 assert b"test-management-key" not in http("/", key=None)[1]
 assert b"test-only-password" not in http("/", key=None)[1]
 assert b"id='key'" not in http("/", key=None)[1]

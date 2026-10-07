@@ -2,16 +2,16 @@
 #include "settings.h"
 #include <string.h>
 #include <stddef.h>
-struct mst_settings settings;
+struct mib_settings settings;
 
-void settings_defaults(struct mst_settings *s)
+void settings_defaults(struct mib_settings *s)
 {
     memset(s, 0, sizeof(*s));
-    strcpy(s->ssid, "MST-Link");
-    strcpy(s->password, "mstlink1");
-    s->forwards[0] = (struct mst_forward){2323, 23};
-    s->forwards[1] = (struct mst_forward){2222, 22};
-    s->forwards[2] = (struct mst_forward){8080, 80};
+    strcpy(s->ssid, "MIB-Link");
+    strcpy(s->password, "miblink1");
+    s->forwards[0] = (struct mib_forward){2323, 23};
+    s->forwards[1] = (struct mib_forward){2222, 22};
+    s->forwards[2] = (struct mib_forward){8080, 80};
 }
 
 static bool printable(const char *s, size_t cap, size_t min)
@@ -23,11 +23,11 @@ static bool printable(const char *s, size_t cap, size_t min)
     return n >= min && n < cap;
 }
 
-bool settings_valid(const struct mst_settings *s)
+bool settings_valid(const struct mib_settings *s)
 {
     if (!printable(s->ssid, sizeof(s->ssid), 1) || !printable(s->password, sizeof(s->password), 8))
         return false;
-    for (unsigned i = 0; i < MST_FORWARD_COUNT; i++) {
+    for (unsigned i = 0; i < MIB_FORWARD_COUNT; i++) {
         unsigned p = s->forwards[i].local, r = s->forwards[i].remote;
         if ((!p) != (!r) || p == 80)
             return false;
@@ -38,13 +38,13 @@ bool settings_valid(const struct mst_settings *s)
     return true;
 }
 
-#ifdef MST_HOST_TEST
+#ifdef MIB_HOST_TEST
 void settings_init(void)
 {
     settings_defaults(&settings);
 }
 
-bool settings_save(const struct mst_settings *s)
+bool settings_save(const struct mib_settings *s)
 {
     if (!settings_valid(s))
         return false;

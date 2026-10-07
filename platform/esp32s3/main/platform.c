@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "mst_platform.h"
+#include "mib_platform.h"
 #include "esp_timer.h"
 #include "esp_mac.h"
 #include "esp_err.h"
 #include <stdio.h>
 #include <string.h>
 
-uint32_t mst_now_ms(void)
+uint32_t mib_now_ms(void)
 {
     return (uint32_t)(esp_timer_get_time() / 1000);
 }
 
-const char *mst_board_name(void)
+const char *mib_board_name(void)
 {
     return "ESP32-S3";
 }
 
-void mst_usb_identity(uint8_t mac[6], char *serial, size_t size)
+void mib_usb_identity(uint8_t mac[6], char *serial, size_t size)
 {
     uint8_t id[6];
     ESP_ERROR_CHECK(esp_efuse_mac_get_default(id));

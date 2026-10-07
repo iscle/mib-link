@@ -28,7 +28,7 @@ def command(root, port, baud, esptool_major=5):
     expected = {
         0x0: "bootloader.bin",
         0x8000: "partition-table.bin",
-        0x10000: "mst-link-esp32s3.bin",
+        0x10000: "mib-link-esp32s3.bin",
     }
     seen = set()
     for image in manifest["images"]:

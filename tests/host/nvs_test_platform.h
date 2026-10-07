@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <assert.h>
-#define CONFIG_MST_RECOVERY_GPIO 4
+#define CONFIG_MIB_RECOVERY_GPIO 4
 #define ESP_OK 0
 #define ESP_ERROR_CHECK(x) assert((x) == ESP_OK)
 #define NVS_READONLY 0

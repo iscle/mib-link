@@ -11,7 +11,7 @@ subprocess.run(
         "-g",
         "-O1",
         "-fsanitize=address,undefined",
-        "-DMST_SETTINGS_TEST",
+        "-DMIB_SETTINGS_TEST",
         "-Isrc",
         "-Itests/host",
         "src/settings.c",

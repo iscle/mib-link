@@ -2,7 +2,7 @@
 #include "manager.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "mst_platform.h"
+#include "mib_platform.h"
 #include "manager_asset.h"
 #include <stdio.h>
 #include <stdint.h>
@@ -42,7 +42,7 @@ static char phase_status[96];
 
 static uint32_t now(void)
 {
-    return mst_now_ms();
+    return mib_now_ms();
 }
 
 static bool hex(const char *s, unsigned n)

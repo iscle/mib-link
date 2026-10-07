@@ -2,8 +2,8 @@
 #include "settings.h"
 #include <string.h>
 #include <stddef.h>
-#ifndef MST_HOST_TEST
-#ifdef MST_SETTINGS_TEST
+#ifndef MIB_HOST_TEST
+#ifdef MIB_SETTINGS_TEST
 #include "settings_test_platform.h"
 #else
 #include "hardware/flash.h"
@@ -12,14 +12,14 @@
 #include "pico/stdlib.h"
 #endif
 #endif
-#ifndef MST_HOST_TEST
+#ifndef MIB_HOST_TEST
 /* Two alternating erase sectors survive a power loss while saving. The linker
  * reserves the final 8 KiB; no code, credentials or payload assets occupy it. */
 #define SETTINGS_OFFSET (PICO_FLASH_SIZE_BYTES - 2 * FLASH_SECTOR_SIZE)
 
 struct record {
     uint32_t magic, version, sequence;
-    struct mst_settings value;
+    struct mib_settings value;
     uint32_t crc;
 };
 
@@ -41,7 +41,7 @@ static uint32_t crc32(const void *v, size_t n)
 
 static bool record_valid(const struct record *r)
 {
-    return r->magic == 0x4d53544c && r->version == 1 &&
+    return r->magic == 0x4d49424c && r->version == 1 &&
            crc32(r, offsetof(struct record, crc)) == r->crc && settings_valid(&r->value);
 }
 
@@ -71,7 +71,7 @@ void settings_init(void)
         settings_defaults(&settings);
 }
 
-bool settings_save(const struct mst_settings *s)
+bool settings_save(const struct mib_settings *s)
 {
     if (!settings_valid(s) || reboot_at)
         return false;
@@ -83,7 +83,7 @@ bool settings_save(const struct mst_settings *s)
 
     memset(&page, 0xff, sizeof(page));
     memset(&page.r, 0, sizeof(page.r));
-    page.r.magic = 0x4d53544c;
+    page.r.magic = 0x4d49424c;
     page.r.version = 1;
     page.r.sequence = sequence + 1;
     page.r.value = *s;
