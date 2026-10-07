@@ -1,0 +1,10 @@
+external/
+vendor/
+licenses/
+build/
+dist/
+generated/
+node_modules/
+private/
+test-results/
+playwright-report/

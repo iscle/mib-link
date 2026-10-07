@@ -169,3 +169,7 @@ These tests use simulated head-unit traffic and mocked browser API responses. Th
 ## License
 
 MST-Link source is **GPL-3.0-or-later**. Third-party components retain their original licenses; see [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and [licenses/](licenses/). No OEM firmware, proprietary QNX headers, vehicle dumps, or private login credentials are included.
+
+## Contributing
+
+Use the [code style and formatting guide](docs/formatting.md) before submitting changes. Run `npm run format:check` with the documented formatter environment active; CI checks formatting for both targets and the shared tools.

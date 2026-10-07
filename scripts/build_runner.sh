@@ -10,6 +10,9 @@ for unit in runner manifest sha256; do
 done
 runtime=$(arm-none-eabi-gcc "${flags[@]}" -print-libgcc-file-name)
 arm-none-eabi-ld -shared --hash-style=sysv -init mhi2_sd_runner -soname sd-runner.so -o build/runner/sd-runner.so build/runner/{runner,manifest,sha256}.o --exclude-libs=ALL "$runtime"
-if arm-none-eabi-nm -u build/runner/sd-runner.so | grep -q __aeabi; then echo 'Unresolved compiler runtime helper' >&2; exit 1; fi
+if arm-none-eabi-nm -u build/runner/sd-runner.so | grep -q __aeabi; then
+    echo 'Unresolved compiler runtime helper' >&2
+    exit 1
+fi
 cp build/runner/sd-runner.so assets/sd-runner.so
 python3 scripts/runner_provenance.py

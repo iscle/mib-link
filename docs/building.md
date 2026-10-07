@@ -2,6 +2,8 @@
 
 Build targets are `pico-w` (default) and `esp32s3`. This page covers Pico W and shared tests; see [esp32s3.md](esp32s3.md) for the ESP-IDF setup, pin mapping, NVS settings, and flashing instructions.
 
+See [Code style and formatting](formatting.md) for the pinned formatters and CI formatting check.
+
 ## Prerequisites
 
 - Python 3.9 or later, Git, CMake 3.20 or later, Ninja, and a native C/C++ compiler.

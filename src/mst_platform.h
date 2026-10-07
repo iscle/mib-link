@@ -5,7 +5,7 @@
 #define MST_SERIAL_SIZE 17
 uint32_t mst_now_ms(void);
 const char *mst_board_name(void);
-void mst_usb_identity(uint8_t mac[6],char *serial,size_t size);
+void mst_usb_identity(uint8_t mac[6], char *serial, size_t size);
 
 #ifdef ESP_PLATFORM
 #define MST_USB_POWER_UNITS 250

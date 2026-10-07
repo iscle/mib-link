@@ -5,6 +5,23 @@ on:
 permissions:
   contents: read
 jobs:
+  formatting:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: scripts/format-requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: python3 -m pip install -r scripts/format-requirements.txt
+      - run: npm ci
+      - run: python3 scripts/format.py --check
+
   test-and-build:
     runs-on: ubuntu-24.04
     steps:

@@ -2,6 +2,13 @@
   "name": "mst-link-ui-tests",
   "private": true,
   "version": "1.0.0",
-  "scripts": {"test": "playwright test"},
-  "devDependencies": {"@playwright/test": "1.63.0"}
+  "scripts": {
+    "test": "playwright test",
+    "format": "python3 scripts/format.py",
+    "format:check": "python3 scripts/format.py --check"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "prettier": "3.6.2"
+  }
 }

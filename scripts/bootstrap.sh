@@ -8,7 +8,10 @@ if [ ! -d "$sdk/.git" ]; then
 fi
 # Do not overwrite changes or a caller's independently managed SDK.
 if [ "$(git -C "$sdk" rev-parse HEAD)" != "$revision" ]; then
-    if [ -n "${PICO_SDK_PATH:-}" ]; then echo 'PICO_SDK_PATH must point at the documented revision' >&2; exit 1; fi
+    if [ -n "${PICO_SDK_PATH:-}" ]; then
+        echo 'PICO_SDK_PATH must point at the documented revision' >&2
+        exit 1
+    fi
     git -C "$sdk" checkout "$revision"
 fi
 git -C "$sdk" submodule update --init lib/lwip lib/tinyusb lib/cyw43-driver lib/mbedtls

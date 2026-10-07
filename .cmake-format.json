@@ -1,0 +1,10 @@
+{
+  "format": { "line_width": 100, "tab_size": 2 },
+  "parse": {
+    "additional_commands": {
+      "idf_component_register": {
+        "kwargs": { "SRCS": "*", "INCLUDE_DIRS": "*", "REQUIRES": "*" }
+      }
+    }
+  }
+}
