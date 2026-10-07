@@ -2,7 +2,7 @@
 #include "console.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "pico/time.h"
+#include "mst_platform.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +14,7 @@ static unsigned queued,state,verb;
 static uint32_t end,session,started,activity;
 static bool ready;
 static const char *status="Disconnected";
-static uint32_t now(void){return to_ms_since_boot(get_absolute_time());}
+static uint32_t now(void){return mst_now_ms();}
 static void close_console(const char *message){
     status=message;ready=false;
     if(connection){struct tcp_pcb *p=connection;connection=NULL;tcp_arg(p,NULL);tcp_err(p,NULL);tcp_recv(p,NULL);tcp_abort(p);}

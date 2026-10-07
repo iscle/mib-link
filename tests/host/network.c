@@ -15,6 +15,8 @@ static struct netif ap;
 static uint32_t millis;
 static struct {uint8_t data[1600];unsigned n,iface;} packets[128];
 static unsigned tail,head;
+const char *mst_board_name(void){return "Host test";}
+uint32_t mst_now_ms(void){return millis;}
 uint32_t sys_now(void){return millis;}
 uint32_t cyw43_hal_ticks_ms(void){return millis;}
 uint64_t get_absolute_time(void){return (uint64_t)millis*1000;}

@@ -6,7 +6,7 @@ Every bundle needs `start.sh`, `stop.sh`, and a strict v1 `manifest.json` genera
 
 A manifest may target the SHA-256 of the unit's original JXE (`--firmware HASH`) or use `any` for scripts reviewed to be firmware-independent. The selection digest identifies the exact manifest. A changed card is not silently trusted for auto-run.
 
-Scripts receive the runner's RAM workspace in `MHI2_RUN_DIR`. Keep background workers and their state there. `start.sh` must return within 180 seconds; long-running work should start a bounded worker and return. `stop.sh` must stop its workers and clean up within 30 seconds. Script output is bounded to 64 KiB; the Pico exposes a bounded recent log. The controller treats cleanup failures separately from successful stop; do not infer cleanup solely from loss of Wi-Fi.
+Scripts receive the runner's RAM workspace in `MHI2_RUN_DIR`. Keep background workers and their state there. `start.sh` must return within 180 seconds; long-running work should start a bounded worker and return. `stop.sh` must stop its workers and clean up within 30 seconds. Script output is bounded to 64 KiB; the adapter exposes a bounded recent log. The controller treats cleanup failures separately from successful stop; do not infer cleanup solely from loss of Wi-Fi.
 
 The runner itself stages under `/ramdisk/pico-manager`, not a persistent installation location. A script is still an arbitrary privileged program and may modify persistent HU files if written to do so.
 

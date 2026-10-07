@@ -3,7 +3,7 @@ const path=require('path');
 const manager={busy:false,authenticated:false,credentials_ready:false,autorun:false,status:'Enter HU credentials to connect',hu_state:'inactive',live_connected:false,cards:[],log:'',progress:null};
 async function fixture(page){
   const calls=[];let opened=false;
-  await page.route('**/status',route=>route.fulfill({json:{usb_network_up:true}}));
+  await page.route('**/status',route=>route.fulfill({json:{usb_network_up:true,board:'ESP32-S3'}}));
   await page.route('**/manage/status',route=>route.fulfill({json:manager}));
   await page.route('**/manage/action',async route=>{calls.push(route.request());await route.fulfill({body:'OK'});});
   await page.route('**/api/settings',async route=>{
@@ -20,6 +20,7 @@ test('workspace layout, keyboard navigation, login and no external dependencies'
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.setViewportSize({width:1280,height:1120});const calls=await fixture(page);
   await expect(page.getByRole('heading',{name:'A direct link to your head unit.'})).toBeVisible();
+  await expect(page.locator('#platform')).toHaveText('ESP32-S3 / USB Ethernet');
   await expect(page.locator('#run')).toBeDisabled();
   await page.screenshot({path:path.join(__dirname,'../../docs/overview.png'),fullPage:true});
   await page.locator('#username').fill('test-user');await page.locator('#password').fill('fixture-password');await page.getByRole('button',{name:'Connect & scan'}).click();
@@ -30,7 +31,7 @@ test('editable Wi-Fi and arbitrary TCP mappings',async({page})=>{
   const calls=await fixture(page);await page.getByRole('button',{name:'Wi-Fi & services'}).click();
   await expect(page.locator('#ssid')).toHaveValue('MST-Link');await page.locator('#ssid').fill('My MST');await page.locator('#wifi-password').fill('newlink1');
   await page.locator('#local-0').fill('6000');await page.locator('#remote-0').fill('12345');
-  await page.getByRole('button',{name:'Save & restart Pico'}).click();await expect(page.locator('#notice')).toContainText('Settings saved');
+  await page.getByRole('button',{name:'Save & restart device'}).click();await expect(page.locator('#notice')).toContainText('Settings saved');
   expect(calls.at(-1).headers()['x-mst-forward1']).toBe('6000:12345');expect(calls.at(-1).headers()['x-mst-ssid']).toBe('My MST');
   await expect(page.locator('#wifi-password')).toHaveValue('');
 });

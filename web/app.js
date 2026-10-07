@@ -32,6 +32,7 @@ async function refresh(){
   if(refreshPending)return;refreshPending=true;
   try{
     const [device,m]=await Promise.all([json('/status'),json('/manage/status')]);manager=m;
+    text('platform',`${device.board||'MST-Link'} / USB Ethernet`);
     text('connection',device.usb_network_up?'USB connected':'Waiting for USB');$('connection').classList.toggle('good',device.usb_network_up);
     text('usb-state',device.usb_network_up?'Link up':'Not connected');text('manager-status',m.status);
     text('hu-state',m.hu_state);text('live-state',m.live_connected?'Connected':'Disconnected');text('phase',m.progress?m.progress.phase:m.hu_state);
@@ -41,7 +42,7 @@ async function refresh(){
     for(const c of cards){const o=document.createElement('option');o.value=cardKey(c);o.textContent=`${c.name} · ${c.slot}`;$('bundle').append(o);}
     if(cards.some(c=>cardKey(c)===previous))$('bundle').value=previous;
     selection();renderProgress(m.progress);
-  }catch(error){text('connection','Pico unreachable');$('connection').classList.remove('good');text('manager-status','Reconnect to MST-Link Wi-Fi to refresh status.');}
+  }catch(error){text('connection','Device unreachable');$('connection').classList.remove('good');text('manager-status','Reconnect to MST-Link Wi-Fi to refresh status.');}
   finally{refreshPending=false;}
 }
 async function loadSettings(){
@@ -50,7 +51,7 @@ async function loadSettings(){
     const row=document.createElement('div');row.className='port-row';
     for(const [kind,value] of [['local',local],['remote',remote]]){
       if(kind==='remote'){const arrow=document.createElement('span');arrow.textContent='→';row.append(arrow);}
-      const input=document.createElement('input');input.type='number';input.min='0';input.max='65535';input.required=true;input.value=value;input.id=`${kind}-${i}`;input.setAttribute('aria-label',`${kind==='local'?'Pico':'Head-unit'} port ${i+1}`);row.append(input);
+      const input=document.createElement('input');input.type='number';input.min='0';input.max='65535';input.required=true;input.value=value;input.id=`${kind}-${i}`;input.setAttribute('aria-label',`${kind==='local'?'Local':'Head-unit'} port ${i+1}`);row.append(input);
     }$('forwards').append(row);
   });settingsLoaded=true;
 }
@@ -70,7 +71,7 @@ $('autorun').onchange=guarded(async()=>{const c=selected();if($('autorun').check
 $('settings-form').onsubmit=guarded(async()=>{
   const headers={'X-MST-SSID':$('ssid').value,'X-MST-Password':$('wifi-password').value};
   for(let i=0;i<3;i++)headers[`X-MST-Forward${i+1}`]=`${$(`local-${i}`).value}:${$(`remote-${i}`).value}`;
-  await request('/api/settings',headers,'POST');$('wifi-password').value='';notice('Settings saved. The Pico is restarting. Reconnect to your Wi-Fi network, then reload this page.');settingsLoaded=false;
+  await request('/api/settings',headers,'POST');$('wifi-password').value='';notice('Settings saved. The device is restarting. Reconnect to your Wi-Fi network, then reload this page.');settingsLoaded=false;
 });
 async function consoleAction(action,data=''){
   const hex=Array.from(new TextEncoder().encode(data),b=>b.toString(16).padStart(2,'0')).join('');
@@ -95,7 +96,7 @@ async function pollConsole(){
   try{
     let s=await json('/api/console',{'X-MST-Cursor':String(cursor)});
     if(session!==s.session){session=s.session;cursor=0;escapeState=0;$('terminal').textContent='';s=await json('/api/console',{'X-MST-Cursor':'0'});}
-    if(s.lost)appendTerminal('\n[Older output expired from the Pico buffer]\n');
+    if(s.lost)appendTerminal('\n[Older output expired from the device buffer]\n');
     appendTerminal(terminalText(Array.from(s.data.match(/../g)||[],h=>parseInt(h,16))));cursor=s.next;
     text('console-state',s.status);$('console-state').classList.toggle('good',s.ready);consoleWatching=s.connected;
     $('console-open').disabled=s.connected;$('console-close').disabled=!s.connected;

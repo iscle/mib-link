@@ -5,7 +5,7 @@
 #include "settings.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "pico/time.h"
+#include "mst_platform.h"
 #include <string.h>
 #define CONNECTIONS 3
 struct relay;
@@ -14,7 +14,7 @@ struct relay {struct side sides[2];bool connected;uint16_t port;uint32_t started
 static struct relay relays[CONNECTIONS];
 static ip_addr_t target;
 static unsigned listeners;
-static uint32_t now(void){return to_ms_since_boot(get_absolute_time());}
+static uint32_t now(void){return mst_now_ms();}
 static void drop(struct relay *r){
     r->connected=false;
     for(unsigned i=0;i<2;i++)if(r->sides[i].pcb){

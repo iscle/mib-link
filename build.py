@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Build clean Pico W firmware. Requires a pinned SDK and Arm GNU toolchain."""
+"""Build MST-Link for Pico W or ESP32-S3 with its pinned SDK."""
 import os
+import argparse
 import hashlib
 from pathlib import Path
 import shutil
@@ -9,6 +10,11 @@ from scripts.generate import generate
 ROOT=Path(__file__).resolve().parent
 SDK_COMMIT='079c6f39023649b154152db30f1d781e884879bc'
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--target",choices=["pico-w","esp32s3"],default="pico-w")
+    if parser.parse_args().target=="esp32s3":
+        from scripts.build_esp32s3 import build
+        build();return
     sdk=Path(os.environ.get('PICO_SDK_PATH',ROOT/'external/pico-sdk')).resolve()
     actual=subprocess.check_output(['git','-C',str(sdk),'rev-parse','HEAD'],text=True).strip()
     if actual!=SDK_COMMIT:raise SystemExit('Unexpected Pico SDK revision; run scripts/bootstrap.sh')

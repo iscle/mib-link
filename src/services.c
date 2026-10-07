@@ -8,14 +8,14 @@
 #include "payload.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "pico/time.h"
+#include "mst_platform.h"
 #include "tusb.h"
 #include <stdio.h>
 #include <string.h>
 #include "manager.h"
 #include <strings.h>
 
-static uint32_t now_ms(void) {return to_ms_since_boot(get_absolute_time());}
+static uint32_t now_ms(void) {return mst_now_ms();}
 static ip_addr_t hu_address;
 static struct tcp_pcb *probe;
 static uint32_t probe_start;
@@ -202,12 +202,12 @@ static err_t http_recv(void *arg,struct tcp_pcb *pcb,struct pbuf *p,err_t error)
     }
     else if(!strncmp(c->request,"GET /status HTTP/1.",19)) {
         snprintf(json,sizeof(json),
-            "{\"build\":\"1.0.0-mst-link\",\"android_auto_payload\":false,\"usb_mounted\":%s,"
+            "{\"build\":\"1.1.0-mst-link\",\"board\":\"%s\",\"android_auto_payload\":false,\"usb_mounted\":%s,"
             "\"usb_network_up\":%s,\"control_requests\":%lu,\"rejected_requests\":%lu,"
             "\"last_rejected_request\":%u,\"frames_from_hu\":%lu,\"frames_to_hu\":%u,"
             "\"malformed_frames\":%lu,\"dropped_frames\":%u,\"service_probe\":\"%s\","
             "\"banner_bytes\":%u,\"banner_hex\":\"%s\",\"deployment\":\"%s\"}\n",
-            tud_mounted()?"true":"false",netif_is_link_up(&usb_netif)?"true":"false",
+            mst_board_name(),tud_mounted()?"true":"false",netif_is_link_up(&usb_netif)?"true":"false",
             (unsigned long)adapter.controls,(unsigned long)adapter.rejected_controls,adapter.last_rejected,
             (unsigned long)adapter.rx_frames,usb_tx_frames,(unsigned long)adapter.malformed_frames,
             usb_dropped_frames,probe_status,banner_bytes,banner_hex,manager_status());

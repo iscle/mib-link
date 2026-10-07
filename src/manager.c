@@ -2,7 +2,7 @@
 #include "manager.h"
 #include "usb_asix.h"
 #include "lwip/tcp.h"
-#include "pico/time.h"
+#include "mst_platform.h"
 #include "manager_asset.h"
 #include <stdio.h>
 #include <stdint.h>
@@ -28,7 +28,7 @@ static char trusted_slot[48],trusted_digest[65];
 static const char *status="Enter HU credentials to connect";
 static char result_line[64];
 static char phase_status[96];
-static uint32_t now(void){return to_ms_since_boot(get_absolute_time());}
+static uint32_t now(void){return mst_now_ms();}
 static bool hex(const char *s,unsigned n){if(strlen(s)!=n)return false;for(unsigned i=0;i<n;i++)if(!strchr("0123456789abcdef",s[i]))return false;return true;}
 static bool word(const char *s,size_t limit){size_t n=strlen(s);if(!n || n>=limit)return false;for(size_t i=0;i<n;i++)if(!((s[i]>='a' && s[i]<='z') || (s[i]>='A' && s[i]<='Z') || (s[i]>='0' && s[i]<='9') || strchr("._-",s[i])))return false;return strcmp(s,".") && strcmp(s,"..");}
 static void close_connection(void){

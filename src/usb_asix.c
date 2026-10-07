@@ -2,8 +2,7 @@
 #include "usb_asix.h"
 #include "tusb.h"
 #include "device/usbd_pvt.h"
-#include "pico/unique_id.h"
-#include "pico/time.h"
+#include "mst_platform.h"
 #include "lwip/etharp.h"
 #include "netif/ethernet.h"
 #include <string.h>
@@ -26,7 +25,7 @@ static struct { uint8_t data[ASIX_FRAME_MAX+10]; uint16_t length; } tx[QUEUE_COU
 static unsigned tx_head, tx_count;
 static bool tx_pending;
 static uint32_t last_status;
-static char serial[2*PICO_UNIQUE_BOARD_ID_SIZE_BYTES+1];
+static char serial[MST_SERIAL_SIZE];
 
 static const tusb_desc_device_t device_descriptor = {
     .bLength=sizeof(tusb_desc_device_t), .bDescriptorType=TUSB_DESC_DEVICE,
@@ -36,7 +35,7 @@ static const tusb_desc_device_t device_descriptor = {
     .bNumConfigurations=1
 };
 static const uint8_t configuration[] = {
-    9,TUSB_DESC_CONFIGURATION,39,0,1,1,0,0x80,125,
+    9,TUSB_DESC_CONFIGURATION,39,0,1,1,0,0x80,MST_USB_POWER_UNITS,
     9,TUSB_DESC_INTERFACE,0,0,3,0xff,0xff,0,0,
     7,TUSB_DESC_ENDPOINT,EP_IN,2,64,0,0,
     7,TUSB_DESC_ENDPOINT,EP_OUT,2,64,0,0,
@@ -83,7 +82,7 @@ static err_t link_output(struct netif *netif,struct pbuf *p) {
     tx[slot].length=n;tx_count++;start_tx();return ERR_OK;
 }
 static err_t netif_init_cb(struct netif *netif) {
-    netif->name[0]='u';netif->name[1]='s';netif->hostname="mhi2-companion";
+    netif->name[0]='u';netif->name[1]='s';netif->hostname="mst-link";
     netif->output=etharp_output;netif->linkoutput=link_output;
     netif->mtu=1500;netif->hwaddr_len=6;
     memcpy(netif->hwaddr,initial_mac,6);netif->hwaddr[5]^=1;
@@ -152,9 +151,7 @@ static const usbd_class_driver_t driver={
 };
 usbd_class_driver_t const *usbd_app_driver_get_cb(uint8_t *count) {*count=1;return &driver;}
 void usb_network_init(void) {
-    pico_unique_board_id_t id;pico_get_unique_board_id(&id);
-    initial_mac[0]=0x02;memcpy(initial_mac+1,id.id+PICO_UNIQUE_BOARD_ID_SIZE_BYTES-5,5);
-    pico_get_unique_board_id_string(serial,sizeof(serial));
+    mst_usb_identity(initial_mac,serial,sizeof(serial));
     asix_init(&adapter,initial_mac);
     ip4_addr_t ip,mask,gw;IP4_ADDR(&ip,172,16,250,1);IP4_ADDR(&mask,255,255,255,0);ip4_addr_set_zero(&gw);
     netif_add(&usb_netif,&ip,&mask,&gw,NULL,netif_init_cb,ethernet_input);
@@ -163,12 +160,12 @@ void usb_network_init(void) {
     tusb_init(0,&config);
 }
 void usb_network_poll(void) {
-    tud_task();
+    tud_task_ext(0,false);
     bool up=endpoints_open && tud_mounted() && !tud_suspended() && (adapter.rx_control&0x80);
     if(up!=!!netif_is_link_up(&usb_netif)) {
         if(up)netif_set_link_up(&usb_netif);else netif_set_link_down(&usb_netif);
     }
-    uint32_t now=to_ms_since_boot(get_absolute_time());
+    uint32_t now=mst_now_ms();
     if(endpoints_open && tud_mounted() && now-last_status>=250 && !usbd_edpt_busy(0,EP_STATUS)) {
         last_status=now;
         usbd_edpt_xfer(0,EP_STATUS,interrupt_data,sizeof(interrupt_data));

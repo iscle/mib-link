@@ -34,3 +34,24 @@ jobs:
             dist/mst-link-pico-w.uf2
             dist/SHA256SUMS
           if-no-files-found: error
+
+  esp32s3-build:
+    runs-on: ubuntu-24.04
+    container: espressif/idf:v5.5.2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned TinyUSB
+        run: git clone --branch 0.18.0 --depth 1 https://github.com/hathach/tinyusb.git external/tinyusb
+      - name: Build and validate generic ESP32-S3 firmware
+        shell: bash
+        run: |
+          . /opt/esp/idf/export.sh
+          python3 build.py --target esp32s3
+          python3 tests/check_esp32s3.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mst-link-esp32s3
+          path: |
+            dist/mst-link-esp32s3.zip
+            dist/ESP32S3-SHA256SUMS
+          if-no-files-found: error

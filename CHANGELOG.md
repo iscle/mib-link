@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0
+
+- ESP32-S3 target with native USB ASIX emulation, WPA2 AP, browser console, TCP forwarding and SD management.
+- Shared service/USB implementation with isolated RP2040 and ESP-IDF platform code.
+- NVS settings, GPIO4 recovery and an ESP32-S3 flash bundle that preserves settings.
+- Platform-neutral page labels, live board identification and instructions for both chips.
+- Both firmware builds and platform settings tests in CI; physical acceptance remains pending.
+
 ## 1.0.0
 
 Initial standalone MST-Link release for Raspberry Pi Pico W.

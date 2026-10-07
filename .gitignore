@@ -12,3 +12,7 @@ __pycache__/
 /node_modules/
 /test-results/
 /playwright-report/
+
+/platform/esp32s3/sdkconfig
+/platform/esp32s3/sdkconfig.old
+/platform/esp32s3/build/

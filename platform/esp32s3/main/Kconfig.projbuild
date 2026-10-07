@@ -1,0 +1,10 @@
+menu "MST-Link"
+config MST_RECOVERY_GPIO
+    int "GPIO held low during application startup to use factory settings (-1 disables)"
+    range -1 48
+    default 4
+    help
+        Use an otherwise unconnected input-capable pin. GPIO19/20 are reserved
+        for native USB. GPIO0 enters the ROM bootloader when held at reset;
+        it must not be used for application settings recovery.
+endmenu

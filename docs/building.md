@@ -1,5 +1,7 @@
 # Building MST-Link
 
+Build targets are `pico-w` (default) and `esp32s3`. This page covers Pico W and shared tests; see [esp32s3.md](esp32s3.md) for the ESP-IDF setup, pin mapping, NVS settings, and flashing instructions.
+
 ## Prerequisites
 
 - Python 3.9 or later, Git, CMake 3.20 or later, Ninja, and a native C/C++ compiler.
@@ -19,13 +21,13 @@ An existing SDK can be selected with `PICO_SDK_PATH`; the build rejects a differ
 Outputs:
 
 ```text
-dist/mst-link-pico-w.uf2   # flash this file
+dist/mst-link-pico-w.uf2   # flash this file on Pico W
 dist/mst-link-pico-w.bin   # byte-for-byte firmware image
 dist/mst-link-pico-w.elf   # debugging symbols
 dist/SHA256SUMS
 ```
 
-The final 8 KiB of 2 MiB flash are reserved for settings by a linker-script override. UF2 validation rejects any firmware block in that area. Wi-Fi defaults are in `src/settings.c`; runtime overrides are journaled on the Pico. Credentials for the head unit are never part of the build.
+The final 8 KiB of 2 MiB flash are reserved for settings by a linker-script override. UF2 validation rejects any firmware block in that area. Wi-Fi defaults are in `src/settings.c`. Pico overrides are journaled by `platform/pico_w/settings.c`; ESP32-S3 stores them with `platform/esp32s3/main/settings.c`. Credentials for the head unit are never part of the build.
 
 ## Tests
 
@@ -37,7 +39,7 @@ npx playwright install chromium
 npm test
 ```
 
-`tests/run.sh` uses the same lwIP revision as the firmware. It compiles the actual C modules into a native packet harness, then drives them with simulated AP and HU peers. Settings flash, ASIX parsing, and the native SD runner have sanitizer tests. UF2 validation requires a completed firmware build.
+`tests/run.sh` uses the Pico SDK lwIP revision for the host harness; ESP32-S3 is additionally compiled against its pinned ESP-IDF lwIP fork. It compiles the actual C modules into a native packet harness, then drives them with simulated AP and HU peers. Pico flash and ESP32-S3 NVS settings, ASIX parsing, and the native SD runner have sanitizer tests. UF2 validation requires a completed firmware build.
 
 On macOS, browser tests use the installed Google Chrome application. On Linux, they use Playwright Chromium. Screenshots are refreshed in `docs/overview.png` and `docs/mobile.png`. API responses in these screenshots are fixtures, not a live vehicle.
 
@@ -51,7 +53,7 @@ Open `http://127.0.0.1:8765/`. This preview does not provide a head-unit backend
 
 ## Rebuild the QNX runner
 
-`assets/sd-runner.so` is compiled from this repository's `runner/` sources. It is not an OEM binary. It is included so a standard Pico build needs no proprietary headers. `scripts/generate.py` checks its SHA-256 **and** each source hash before embedding it.
+`assets/sd-runner.so` is compiled from this repository's `runner/` sources. It is not an OEM binary. It is included so a standard firmware build needs no proprietary headers. `scripts/generate.py` checks its SHA-256 **and** each source hash before embedding it.
 
 Rebuilding it requires your own compatible QNX 6.5 ARM SDP headers. No QNX SDK files or libraries are distributed here. The cross-compile uses the Arm GNU compiler above and links its compiler runtime; HU libc symbols are resolved on the head unit.
 
