@@ -77,10 +77,18 @@ test('workspace layout, keyboard navigation, login and no external dependencies'
   await expect(page.locator('#run')).toBeDisabled();
   await page.screenshot({ path: path.join(__dirname, '../../docs/overview.png'), fullPage: true });
   await page.locator('#username').fill('test-user');
+  await expect(page.locator('#password')).toHaveAttribute('type', 'text');
   await page.locator('#password').fill('fixture-password');
+  await page.route('**/manage/status', (route) =>
+    route.fulfill({ json: { ...manager, authenticated: true, status: 'Connected' } }),
+  );
   await page.getByRole('button', { name: 'Connect & scan' }).click();
   await expect.poll(() => calls.length).toBe(1);
   expect(calls[0].headers()['x-hu-password']).toBe('fixture-password');
+  await expect(page.locator('#manager-status')).toHaveText('Connected');
+  await expect(page.locator('#password')).toHaveValue('fixture-password');
+  await page.getByRole('button', { name: 'Forget login' }).click();
+  await expect(page.locator('#username')).toHaveValue('');
   await expect(page.locator('#password')).toHaveValue('');
   expect(errors).toEqual([]);
 });

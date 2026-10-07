@@ -119,7 +119,7 @@ Copy the `mhi2` directory to the SD root, insert the card into the head unit, th
 
 The runner verifies the selected manifest and file hashes before executing a RAM copy. Hash checking detects changed files; it does **not** establish that an unknown script is safe. Payloads run with the service account's privileges and can write persistent storage if their code does so. Review scripts before running them.
 
-Head-unit credentials live only in device RAM. **Forget login** clears them; power loss also clears them. The firmware contains no default head-unit account or password.
+The head-unit password is visible and stays in the page after connecting. **Forget login** clears the page fields and the device's login. Device credentials live only in RAM and are also cleared by power loss. The firmware contains no default head-unit account or password.
 
 Auto-run remembers one selected slot and digest only until the device restarts or the session fails. Unplugging the adapter does **not** stop an already running payload. Cleanup depends on the bundle's stop script; RAM staging itself disappears when the head unit reboots. See [the bundle contract](docs/bundles.md).
 

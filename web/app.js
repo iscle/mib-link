@@ -170,10 +170,13 @@ for (const button of document.querySelectorAll('[data-tab]'))
 $('login').onsubmit = guarded(async () => {
   const user = $('username').value,
     password = $('password').value;
-  $('password').value = '';
   await action('connect', { 'X-HU-User': user, 'X-HU-Password': password });
 });
-$('forget').onclick = guarded(() => action('disconnect'));
+$('forget').onclick = guarded(async () => {
+  await action('disconnect');
+  $('username').value = '';
+  $('password').value = '';
+});
 $('scan').onclick = guarded(() => action('scan'));
 $('bundle').onchange = selection;
 $('run').onclick = guarded(async () => {
