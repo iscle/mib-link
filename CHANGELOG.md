@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+
+- Remove the introductory banner so workspace controls appear directly beneath the header.
+- Move board/version details to the footer and remove unused banner styles.
+
 ## 1.2.0
 
 - Rename the project, repository, firmware downloads, USB identity and API headers to MIB-Link.

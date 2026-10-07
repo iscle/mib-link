@@ -40,7 +40,7 @@ def build():
         ],
         check=True,
     )
-    manifest = {"chip": "esp32s3", "version": "1.2.0", "flash_size": "4MB", "images": []}
+    manifest = {"chip": "esp32s3", "version": "1.2.1", "flash_size": "4MB", "images": []}
     bundle = ROOT / "dist/esp32s3"
     bundle.mkdir(parents=True, exist_ok=True)
     for offset, source, name in [
@@ -59,7 +59,7 @@ def build():
     (bundle / "flash.json").write_text(json.dumps(manifest, indent=2) + "\n")
     shutil.copy2(ROOT / "scripts/flash_esp32s3.py", bundle / "flash.py")
     (bundle / "README.txt").write_text(
-        "MIB-Link 1.2.0 — ESP32-S3, >=4 MB flash, no PSRAM required\n\n"
+        "MIB-Link 1.2.1 — ESP32-S3, >=4 MB flash, no PSRAM required\n\n"
         "Use the native USB connector (GPIO19 D-, GPIO20 D+), not a USB-UART connector.\n"
         "Enter ROM download mode with BOOT held during reset, then release BOOT.\n"
         'Install esptool 4.12 or 5.x: python3 -m pip install "esptool>=4.12,<6"\n'

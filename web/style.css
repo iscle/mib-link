@@ -69,27 +69,8 @@ a {
 }
 main {
   max-width: 1180px;
-  padding: 0 36px;
+  padding: 24px 36px 0;
   margin: auto;
-}
-.intro {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 38px 0 26px;
-}
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 2px;
-  font-weight: 700;
-  color: var(--accent);
-  margin: 0 0 10px;
-}
-h1 {
-  font-size: 32px;
-  line-height: 1.25;
-  letter-spacing: -1.1px;
-  margin: 0 0 12px;
 }
 h2 {
   font-size: 17px;
@@ -99,21 +80,12 @@ h2 {
 p {
   margin: 12px 0;
 }
-.intro p:last-child {
-  margin: 0;
-}
 .muted,
 .caption {
   color: var(--muted);
 }
 .caption {
   font-size: 12px;
-}
-.version {
-  font:
-    12px ui-monospace,
-    monospace;
-  color: var(--muted);
 }
 nav {
   display: flex;
@@ -412,16 +384,7 @@ footer {
     padding: 22px;
   }
   main {
-    padding: 0 20px;
-  }
-  .intro {
-    padding-top: 28px;
-  }
-  h1 {
-    font-size: 26px;
-  }
-  .version {
-    display: none;
+    padding: 20px 20px 0;
   }
   .grid {
     grid-template-columns: 1fr;

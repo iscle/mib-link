@@ -72,9 +72,7 @@ test('workspace layout, keyboard navigation, login and no external dependencies'
   page.on('pageerror', (e) => errors.push(e.message));
   await page.setViewportSize({ width: 1280, height: 1120 });
   const calls = await fixture(page);
-  await expect(
-    page.getByRole('heading', { name: 'A direct link to your head unit.' }),
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Head-unit connection' })).toBeVisible();
   await expect(page.locator('#platform')).toHaveText('ESP32-S3 / USB Ethernet');
   await expect(page.locator('#run')).toBeDisabled();
   await page.screenshot({ path: path.join(__dirname, '../../docs/overview.png'), fullPage: true });

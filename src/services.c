@@ -385,7 +385,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err
         }
     } else if (!strncmp(c->request, "GET /status HTTP/1.", 19)) {
         snprintf(json, sizeof(json),
-                 "{\"build\":\"1.2.0-mib-link\",\"board\":\"%s\",\"android_auto_payload\":false,"
+                 "{\"build\":\"1.2.1-mib-link\",\"board\":\"%s\",\"android_auto_payload\":false,"
                  "\"usb_mounted\":%s,"
                  "\"usb_network_up\":%s,\"control_requests\":%lu,\"rejected_requests\":%lu,"
                  "\"last_rejected_request\":%u,\"frames_from_hu\":%lu,\"frames_to_hu\":%u,"

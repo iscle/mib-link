@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 set(IDF_TARGET esp32s3)
 set(COMPONENTS main)
-set(PROJECT_VER "1.2.0")
+set(PROJECT_VER "1.2.1")
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(mib_link)
